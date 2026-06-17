@@ -3581,12 +3581,24 @@ function renderIata(){
   grid.querySelectorAll('.mini.test').forEach(b=> b.onclick=()=>sayIt(b, b.dataset.say));
 }
 
-/* Text-to-speech */
+/* Text-to-speech — prefer a voice that's consistent across machines (Chrome's Google US English) */
+function bestSayVoice(){
+  const en = listEnglishVoices();
+  return en.find(v=>/google us english/i.test(v.name))
+      || en.find(v=>/google (uk|us) english/i.test(v.name))
+      || en.find(v=>/microsoft.*(aria|jenny|guy|michelle|ana).*(united states|english)/i.test(v.name))
+      || en.find(v=>/samantha/i.test(v.name))
+      || en.find(v=>/en[-_]US/i.test(v.lang) && /google|microsoft|natural|online/i.test(v.name))
+      || en.find(v=>/en[-_]US/i.test(v.lang))
+      || en[0] || null;
+}
 function hearIt(text){
   if(!('speechSynthesis' in window)){ alert('Your browser does not support speech playback.'); return; }
+  try{ window.speechSynthesis.getVoices(); }catch(e){}
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang='en-US'; u.rate=0.92;
+  u.lang='en-US'; u.rate=0.9; u.pitch=1; u.volume=1;
+  const v = bestSayVoice(); if(v) u.voice=v;
   window.speechSynthesis.speak(u);
 }
 
