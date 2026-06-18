@@ -654,6 +654,10 @@
   .admin-table td.muted{color:var(--muted);font-size:12.5px}
   .abadge{display:inline-block;font-size:11px;font-family:var(--mono);padding:2px 9px;border-radius:20px;background:#eef1f5;color:#5a6b7d;border:1px solid var(--line)}
   .abadge.pass{background:rgba(47,179,126,.12);color:#1c7a52;border-color:rgba(47,179,126,.35)}
+  .pb-track{height:4px;background:rgba(255,255,255,.16);border-radius:3px;margin-top:9px;overflow:hidden}
+  .pb-track i{display:block;height:100%;width:0;background:var(--amber);border-radius:3px;transition:width .45s ease}
+  .present-focus{outline:3px solid var(--amber);outline-offset:6px;border-radius:14px;box-shadow:0 0 0 7px rgba(240,165,0,.16);scroll-margin:130px;transition:outline-color .3s ease, box-shadow .3s ease}
+  @media (prefers-reduced-motion: reduce){ .pb-track i{transition:none} .present-focus{transition:none} }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -747,6 +751,11 @@ const WELCOME_VIDEO_URL = ""; // e.g. "https://xxxx.supabase.co/storage/v1/objec
 // When set, the presenter plays files named <module>-intro.mp3, <module>-00.mp3, ... <module>-outro.mp3
 // e.g. "https://xxxx.supabase.co/storage/v1/object/public/training-audio/"
 const AUDIO_BASE = "";
+
+/* IATA pronunciation audio (optional, for a consistent ElevenLabs male voice).
+   Point this at a public folder of clips named by airport code, e.g. LAX.mp3, JFK.mp3.
+   Leave "" to use the built-in browser voice. Any missing clip falls back to the browser voice. */
+const IATA_AUDIO_BASE = ""; // e.g. "https://hplnchoruykuoeqgpsps.supabase.co/storage/v1/object/public/iata-audio/"
 
 /* ============================================================
    ADMIN LIVE SYNC (optional)
@@ -1909,12 +1918,16 @@ function presenterMarkup(){
     <div class="pb-text">
       <div class="pb-chapter" id="pbChapter"></div>
       <div class="pb-cap" id="pbCap"></div>
+      <div class="pb-track"><i id="pbFill"></i></div>
     </div>
     <div class="pb-ctrl">
       <select id="pbVoice" class="pb-voice" title="Choose a voice"></select>
-      <button id="pbMute" title="Mute / unmute voice">🔊</button>
-      <button id="pbToggle" title="Pause / resume">⏸</button>
-      <button id="pbStop" title="Stop">⏹</button>
+      <button id="pbPrev" title="Previous section (←)">⏮</button>
+      <button id="pbToggle" title="Pause / resume (space)">⏸</button>
+      <button id="pbNext" title="Next section (→)">⏭</button>
+      <button id="pbReplay" title="Replay this section">🔁</button>
+      <button id="pbMute" title="Mute / unmute voice (M)">🔊</button>
+      <button id="pbStop" title="Stop (Esc)">⏹</button>
       <span class="pb-prog" id="pbProg"></span>
     </div>
   </div>`;
@@ -1946,6 +1959,7 @@ const LV_BEATS = [
 ];
 
 let presentRun=false, presentCancel=false, presentPaused=false, presentMuted=false, chosenVoiceName=null, currentAudio=null;
+let presentInterrupt=false, pIndex=0, pJump=null, presentKeyH=null, lastFocusEl=null;
 let curBeats=CO_BEATS, curIntro={}, curOutro={}, curPrefix='company';
 function presentCompany(){
   curBeats=CO_BEATS; curPrefix='company';
@@ -2152,7 +2166,7 @@ function playAudio(url){
     currentAudio=a;
     a.onended=()=>finish('ended');
     a.onerror=()=>finish('error');
-    const iv=setInterval(()=>{ if(presentCancel){ try{a.pause();}catch(e){} finish('cancel'); } }, 150);
+    const iv=setInterval(()=>{ if(presentCancel||presentInterrupt){ try{a.pause();}catch(e){} finish('cancel'); } }, 150);
     a.play().catch(()=>finish('error'));
   });
 }
@@ -2176,7 +2190,7 @@ function pWait(ms){
   return new Promise(resolve=>{
     let elapsed=0; const step=100;
     const iv=setInterval(()=>{
-      if(presentCancel){ clearInterval(iv); resolve(); return; }
+      if(presentCancel||presentInterrupt){ clearInterval(iv); resolve(); return; }
       if(presentPaused) return;
       elapsed+=step;
       if(elapsed>=ms){ clearInterval(iv); resolve(); }
@@ -2185,11 +2199,24 @@ function pWait(ms){
 }
 function startPresent(){
   if(presentRun) return;
-  presentRun=true; presentCancel=false; presentPaused=false;
+  presentRun=true; presentCancel=false; presentPaused=false; presentInterrupt=false;
   const bar=document.getElementById('presentBar'); if(bar) bar.style.display='flex';
   const tg=document.getElementById('pbToggle'); if(tg){ tg.textContent='⏸'; tg.onclick=togglePresent; }
   const mt=document.getElementById('pbMute'); if(mt){ mt.textContent= presentMuted?'🔇':'🔊'; mt.onclick=toggleMute; }
   const ps=document.getElementById('pbStop'); if(ps) ps.onclick=stopPresent;
+  const pv=document.getElementById('pbPrev'); if(pv) pv.onclick=prevBeat;
+  const nx=document.getElementById('pbNext'); if(nx) nx.onclick=nextBeat;
+  const rp=document.getElementById('pbReplay'); if(rp) rp.onclick=replayBeat;
+  presentKeyH=(e)=>{
+    const tag=(e.target&&e.target.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||tag==='select') return;
+    if(e.key===' '||e.code==='Space'){ e.preventDefault(); togglePresent(); }
+    else if(e.key==='ArrowRight'){ e.preventDefault(); nextBeat(); }
+    else if(e.key==='ArrowLeft'){ e.preventDefault(); prevBeat(); }
+    else if(e.key==='Escape'){ e.preventDefault(); stopPresent(); }
+    else if(e.key==='m'||e.key==='M'){ toggleMute(); }
+  };
+  document.addEventListener('keydown', presentKeyH);
   populateVoicePicker();
   runPresent();
 }
@@ -2205,10 +2232,11 @@ function togglePresent(){
   if(currentAudio){ try{ presentPaused ? currentAudio.pause() : currentAudio.play(); }catch(e){} }
 }
 function stopPresent(){
-  presentCancel=true; presentRun=false; presentPaused=false;
+  presentCancel=true; presentRun=false; presentPaused=false; presentInterrupt=false;
   try{ window.speechSynthesis.cancel(); }catch(e){}
   if(currentAudio){ try{currentAudio.pause();}catch(e){} currentAudio=null; }
-  setSpeaking(false);
+  setSpeaking(false); clearFocus();
+  if(presentKeyH){ document.removeEventListener('keydown', presentKeyH); presentKeyH=null; }
   const bar=document.getElementById('presentBar'); if(bar) bar.style.display='none';
   const ov=document.getElementById('presentOverlay'); if(ov){ ov.classList.remove('show','speaking'); ov.style.display='none'; }
 }
@@ -2243,29 +2271,63 @@ function showBumper(eyebrow, title, sub, ms, file){
     resolve();
   });
 }
+function setFocusEl(el){
+  if(lastFocusEl && lastFocusEl!==el) lastFocusEl.classList.remove('present-focus');
+  if(el) el.classList.add('present-focus');
+  lastFocusEl=el;
+}
+function clearFocus(){ if(lastFocusEl){ lastFocusEl.classList.remove('present-focus'); lastFocusEl=null; } }
+function updateProg(i){
+  const prog=document.getElementById('pbProg'); if(prog) prog.textContent=`${i+1} / ${curBeats.length}`;
+  const fill=document.getElementById('pbFill'); if(fill) fill.style.width=(((i+1)/curBeats.length)*100)+'%';
+}
+async function playBeat(i){
+  presentInterrupt=false;
+  const b=curBeats[i];
+  updateProg(i);
+  const ch=document.getElementById('pbChapter'); if(ch) ch.textContent=b.chapter||'';
+  if(b.tab && typeof window.__subTab==='function') window.__subTab(b.tab, true);
+  const el=document.querySelector(b.sel);
+  if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); setFocusEl(el); }
+  await pWait(800); if(presentCancel||presentInterrupt) return;
+  const cap=document.getElementById('pbCap'); if(cap){ cap.style.opacity=0; setTimeout(()=>{ cap.textContent=b.cap; cap.style.opacity=1; }, 150); }
+  if(b.action){ try{ b.action(); }catch(e){} }
+  await narrate(audioFileFor(i), b.cap, b.dur);
+}
 async function runPresent(){
   await showBumper(curIntro.eyebrow, curIntro.title, curIntro.sub, 3200, curPrefix+'-intro.mp3');
   if(presentCancel){ presentRun=false; return; }
-  for(let i=0;i<curBeats.length;i++){
+  pIndex=0; pJump=null;
+  while(pIndex < curBeats.length){
     if(presentCancel) break;
-    const b=curBeats[i];
-    const prog=document.getElementById('pbProg'); if(prog) prog.textContent=`${i+1} / ${curBeats.length}`;
-    const ch=document.getElementById('pbChapter'); if(ch) ch.textContent=b.chapter||'';
-    if(b.tab && typeof window.__subTab==='function') window.__subTab(b.tab, true);
-    const el=document.querySelector(b.sel); if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
-    await pWait(800); if(presentCancel) break;
-    const cap=document.getElementById('pbCap'); if(cap){ cap.style.opacity=0; setTimeout(()=>{ cap.textContent=b.cap; cap.style.opacity=1; }, 150); }
-    if(b.action){ try{ b.action(); }catch(e){} }
-    await narrate(audioFileFor(i), b.cap, b.dur);
+    await playBeat(pIndex);
     if(presentCancel) break;
+    if(pJump!==null){
+      const t=pJump; pJump=null;
+      if(t>=curBeats.length) break;          // "next" past the last section ends the show
+      pIndex = Math.max(0, t);
+      continue;
+    }
+    pIndex++;
   }
   if(!presentCancel){
+    clearFocus();
     const bar=document.getElementById('presentBar'); if(bar) bar.style.display='none';
     await showBumper(curOutro.eyebrow, curOutro.title, curOutro.sub, 3600, curPrefix+'-outro.mp3');
     stopPresent();
   }
   presentRun=false;
 }
+function gotoBeat(t){
+  if(!presentRun) return;
+  if(presentPaused) togglePresent();          // resume so it keeps playing from the new spot
+  pJump=t; presentInterrupt=true;
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  if(currentAudio){ try{currentAudio.pause();}catch(e){} currentAudio=null; }
+}
+function nextBeat(){ gotoBeat((pJump!==null?pJump:pIndex)+1); }
+function prevBeat(){ gotoBeat((pJump!==null?pJump:pIndex)-1); }
+function replayBeat(){ gotoBeat(pIndex); }
 function coAnimateStats(){
   document.querySelectorAll('.co-view .countup').forEach(el=>{
     const target=+el.dataset.target, suf=el.dataset.suffix||''; const dur=1100, start=performance.now();
@@ -2945,12 +3007,12 @@ function viewIata(){
   <div class="board-hero">
     <div class="bh-l">
       <h3>DEPARTURES</h3>
-      <p>Tap <b>Hear it</b> to listen, then <b>Say it</b> and we'll check what you said against the city name.</p>
+      <p>Tap <b>Hear it</b> to listen, <b>🐢 Slow</b> to hear it played at half speed so you can catch each syllable, then <b>Say it</b> and we'll check what you said against the city name.</p>
     </div>
     <div class="flip-clock">NOW BOARDING <span id="iataCount">0</span> CODES</div>
   </div>
 
-  <div class="note"><span>🎤</span><div><b>Mic tip.</b> "Hear it" works in any modern browser. The "Say it" speech test needs <b>Chrome or Edge</b> and microphone permission — and works most reliably when this file is opened directly (not inside a preview frame).</div></div>
+  <div class="note"><span>🎤</span><div><b>Mic tip.</b> Playback uses a clear male US voice. For the most natural-sounding voice, open this in <b>Microsoft Edge</b>; Chrome also works well. The <b>Say it</b> speech test needs <b>Chrome or Edge</b> and microphone permission, and works most reliably when the page is opened directly (not inside a preview frame).</div></div>
 
   <div class="iata-controls">
     <div class="search"><span class="ico">🔍</span><input id="iataSearch" placeholder="Search code or city — e.g. YYZ, Toronto, London"></div>
@@ -3554,7 +3616,8 @@ function iataCardHTML(a){
         <div class="ic-name"><div class="city">${a.city} <span class="ic-flag">${a.flag}</span></div><div class="air">${a.air}</div></div>
       </div>
       <div class="ic-actions">
-        <button class="mini listen" data-say="${escAttr(a.say)}">🔊 Hear it <span class="ph">${a.phon}</span></button>
+        <button class="mini listen" data-say="${escAttr(a.say)}" data-code="${a.c}">🔊 Hear it <span class="ph">${a.phon}</span></button>
+        <button class="mini slow" data-say="${escAttr(a.say)}" data-code="${a.c}">🐢 Slow</button>
         <button class="mini test" data-say="${escAttr(a.say)}">🎤 Say it</button>
       </div>
       <div class="ic-result"></div>
@@ -3577,29 +3640,57 @@ function renderIata(){
   } else {
     grid.innerHTML = data.map(iataCardHTML).join('');
   }
-  grid.querySelectorAll('.mini.listen').forEach(b=> b.onclick=()=>hearIt(b.dataset.say));
+  grid.querySelectorAll('.mini.listen').forEach(b=> b.onclick=()=>hearIt(b.dataset.say, b.dataset.code));
+  grid.querySelectorAll('.mini.slow').forEach(b=> b.onclick=()=>hearItSlow(b, b.dataset.say, b.dataset.code));
   grid.querySelectorAll('.mini.test').forEach(b=> b.onclick=()=>sayIt(b, b.dataset.say));
 }
 
-/* Text-to-speech — prefer a voice that's consistent across machines (Chrome's Google US English) */
+/* Text-to-speech — prefer a clear, male American voice (with safe fallbacks per machine) */
 function bestSayVoice(){
   const en = listEnglishVoices();
-  return en.find(v=>/google us english/i.test(v.name))
-      || en.find(v=>/google (uk|us) english/i.test(v.name))
-      || en.find(v=>/microsoft.*(aria|jenny|guy|michelle|ana).*(united states|english)/i.test(v.name))
-      || en.find(v=>/samantha/i.test(v.name))
-      || en.find(v=>/en[-_]US/i.test(v.lang) && /google|microsoft|natural|online/i.test(v.name))
-      || en.find(v=>/en[-_]US/i.test(v.lang))
-      || en[0] || null;
+  const us = en.filter(v=>/en[-_]US/i.test(v.lang));
+  const pool = us.length ? us : en;
+  const find = re => pool.find(v=>re.test(v.name));
+  return find(/microsoft (guy|andrew|brian|christopher|eric|davis|jason|tony|steffan|roger)\b.*natural/i) // Edge natural male (best)
+      || find(/\b(guy|andrew|brian|christopher|eric|davis|jason|tony|steffan|roger)\b/i)                  // other natural male
+      || find(/microsoft (david|mark)\b/i)                                                               // Windows desktop male (Chrome)
+      || find(/\b(aaron|alex|reed|fred|tom|nathan)\b/i)                                                   // macOS male (Alex/Aaron are en-US)
+      || pool.find(v=>isMaleName(v.name))                                                                 // any male-sounding US voice
+      || find(/google us english/i)                                                                      // clear US fallback (not male)
+      || us[0] || en[0] || null;
 }
-function hearIt(text){
-  if(!('speechSynthesis' in window)){ alert('Your browser does not support speech playback.'); return; }
+function ttsSpeak(text, rate, res){
+  if(!('speechSynthesis' in window)){ if(!res) alert('Your browser does not support speech playback.'); return; }
   try{ window.speechSynthesis.getVoices(); }catch(e){}
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang='en-US'; u.rate=0.9; u.pitch=1; u.volume=1;
+  const spaced = rate<0.7 ? (text||'').replace(/\s+/g,', ') : text;   // pauses between words when slow
+  const u = new SpeechSynthesisUtterance(spaced);
+  u.lang='en-US'; u.rate=rate; u.pitch=1; u.volume=1;
   const v = bestSayVoice(); if(v) u.voice=v;
+  if(res){ u.onend=()=>{ res.className='ic-result'; res.textContent=''; }; u.onerror=u.onend; }
   window.speechSynthesis.speak(u);
+}
+function playClip(url, rate, onclear){
+  return new Promise((resolve,reject)=>{
+    try{
+      const a = new Audio(url); a.playbackRate = rate||1;
+      a.onended=()=>{ if(onclear) onclear(); resolve(true); };
+      a.onerror=()=>reject(new Error('clip'));
+      a.play().catch(()=>reject(new Error('play')));
+    }catch(e){ reject(e); }
+  });
+}
+function hearIt(text, code){
+  if(IATA_AUDIO_BASE && code){ playClip(IATA_AUDIO_BASE+code+'.mp3', 1, null).catch(()=>ttsSpeak(text,0.9,null)); return; }
+  ttsSpeak(text, 0.9, null);
+}
+function hearItSlow(btn, text, code){
+  const card = btn.closest('.iata-card');
+  const res = card ? card.querySelector('.ic-result') : null;
+  if(res){ res.className='ic-result show listening'; res.textContent='🐢 Playing slowly — listen to each part…'; }
+  const clear=()=>{ if(res){ res.className='ic-result'; res.textContent=''; } };
+  if(IATA_AUDIO_BASE && code){ playClip(IATA_AUDIO_BASE+code+'.mp3', 0.6, clear).catch(()=>ttsSpeak(text,0.5,res)); return; }
+  ttsSpeak(text, 0.5, res);
 }
 
 /* Speech recognition pronunciation test — listens carefully and scores the match */
