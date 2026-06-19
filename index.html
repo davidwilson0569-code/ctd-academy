@@ -660,6 +660,28 @@
   .pb-track i{display:block;height:100%;width:0;background:var(--amber);border-radius:3px;transition:width .45s ease}
   .present-focus{outline:3px solid var(--amber);outline-offset:6px;border-radius:14px;box-shadow:0 0 0 7px rgba(240,165,0,.16);scroll-margin:130px;transition:outline-color .3s ease, box-shadow .3s ease}
   @media (prefers-reduced-motion: reduce){ .pb-track i{transition:none} .present-focus{transition:none} }
+  .btn-present{background:linear-gradient(135deg,#F0A500,#ffc24d);color:#0E1B2C;font-weight:700;border:none;padding:12px 22px;font-size:14.5px;border-radius:10px;box-shadow:0 3px 14px rgba(240,165,0,.42);letter-spacing:.2px;transition:.15s}
+  .btn-present:hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 5px 18px rgba(240,165,0,.5)}
+  .present-cta{background:rgba(240,165,0,.06);border:1px dashed rgba(240,165,0,.4);border-radius:12px;padding:14px 16px}
+  .gate-intro{background:#fff;border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:12px;padding:16px 18px}
+  .gate-intro p{margin:0 0 12px;font-size:14px;line-height:1.55}
+  .gate-result{text-align:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 20px}
+  .gate-result.pass{border-color:rgba(47,179,126,.4);background:rgba(47,179,126,.05)}
+  .gate-result.fail{border-color:rgba(232,105,61,.35);background:rgba(232,105,61,.05)}
+  .gr-score{font-family:var(--disp);font-size:40px;font-weight:700;color:var(--navy)}
+  .gate-result h4{margin:6px 0 4px;font-size:18px}
+  .gate-result p{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+  .gate-result .btn{margin:4px}
+  .iax-code{font-family:var(--mono);font-weight:600;font-size:46px;letter-spacing:5px;color:#fff;background:#0a1422;border:1px solid #1d2c41;border-radius:14px;padding:18px 10px;text-align:center;box-shadow:inset 0 0 0 1px rgba(240,165,0,.14);margin:6px 0 4px}
+  .iax-step{font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin:16px 0 8px;font-weight:600}
+  .iax-say{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .iax-reveal{margin-top:14px;padding:13px 15px;border-radius:10px;font-size:14px}
+  .iax-reveal.ok{background:rgba(47,179,126,.1);color:#1c7a52}
+  .iax-reveal.no{background:rgba(232,105,61,.1);color:#b3461f}
+  .ex-locked{text-align:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:40px 24px}
+  .ex-locked .ex-ico{font-size:40px}
+  .ex-opt.correct{background:rgba(47,179,126,.15);border-color:var(--go);color:#1c7a52;font-weight:600}
+  .ex-opt.wrong{background:rgba(232,105,61,.12);border-color:#e8693d;color:#b3461f}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -733,7 +755,9 @@ let examBest = _saved.examBest || 0;
 let examPassed = !!_saved.examPassed;
 function genId(){ try{ return crypto.randomUUID(); }catch(e){ return 'a'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); } }
 let agentId = _saved.agentId || genId();
-function persist(){ saveStore({progress, name:agentName, examBest, examPassed, agentId}); syncAgent(); }
+let examSession = _saved.examSession || null;
+let iaxSession = _saved.iaxSession || null;
+function persist(){ saveStore({progress, name:agentName, examBest, examPassed, agentId, examSession, iaxSession}); syncAgent(); }
 function initials(n){ n=(n||'').trim(); if(!n) return 'NA'; const p=n.split(/\s+/); return ((p[0][0]||'')+(p[1]?p[1][0]:'')).toUpperCase(); }
 function setName(v){ agentName=v; persist(); refreshIdentity(); }
 function refreshIdentity(){
@@ -1704,10 +1728,10 @@ function viewDash(){
       <h4>Roleplay Call</h4><p>Handle a live customer call where every choice changes what happens next. See how the conversation plays out.</p>
       <div class="mc-foot"><span>Branching simulator</span><span>→</span></div>
     </div>
-    <div class="mcard accent" data-view="exam">
+    <div class="mcard accent ${allModulesDone()?'':'locked'}" data-view="exam">
       <div class="mc-top"><div class="mc-ico">📝</div><div class="mc-num">ASSESSMENT</div></div>
-      <h4>Final Exam</h4><p>${examPassed?'Passed ✓ — retake anytime to improve your score.':`Questions from every module. Score ${EXAM_PASS}% to pass and earn your certificate.`}</p>
-      <div class="mc-foot"><span>${examBest?('Best: '+examBest+'%'):'Not attempted'}</span><span>→</span></div>
+      <h4>Final Exam</h4><p>${examPassed?'Passed ✓ — retake anytime to improve your score.':(allModulesDone()?`${EXAM_N} questions from every module. Score ${EXAM_PASS}% to pass and earn your certificate.`:'Locked — pass the checkpoint in all 7 modules first.')}</p>
+      <div class="mc-foot"><span>${allModulesDone()?(examBest?('Best: '+examBest+'%'):'Ready'):'🔒 Locked'}</span><span>→</span></div>
     </div>
     <div class="mcard accent ${examPassed?'':'locked'}" data-view="cert">
       <div class="mc-top"><div class="mc-ico">🏆</div><div class="mc-num">REWARD</div></div>
@@ -1758,7 +1782,7 @@ function viewCompany(){return `
   <div class="co-view">
   <h2 class="page-title">Welcome to CheapTicketsDeal</h2>
   <p class="page-sub">Your first day, in one place. By the end you'll know what we do, the markets we serve, what we promise customers, and how to talk about us with confidence.</p>
-  <div class="present-cta"><button class="btn btn-primary" id="presentBtn">Presenter mode</button><span class="present-hint">Plays the whole module hands-free with on-screen captions — perfect for screen-recording a training video.</span></div>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">Plays the whole module hands-free with on-screen captions — perfect for screen-recording a training video.</span></div>
 
   <div class="co-hero">
     <div class="plane">✈️</div>
@@ -1857,7 +1881,7 @@ function viewCompany(){return `
 
   ${presenterMarkup()}
 
-  ${completeBtn('company')}
+  ${moduleGateHTML('company')}
   </div>`;
 }
 
@@ -2413,7 +2437,7 @@ function viewLeaves(){return `
   <div class="lv-view">
   <h2 class="page-title">Leave &amp; Attendance</h2>
   <p class="page-sub">Your time off, simply explained — how many leaves you get, how the weekly off works, and the one rule that costs you money if you miss it.</p>
-  <div class="present-cta"><button class="btn btn-primary" id="presentBtn">Presenter mode</button><span class="present-hint">A narrated walkthrough with a voice-over host — turn your sound on.</span></div>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">A narrated walkthrough with a voice-over host — turn your sound on.</span></div>
 
   <div class="co-hero">
     <div class="plane">📆</div>
@@ -2453,7 +2477,7 @@ function viewLeaves(){return `
   <div class="placeholder" style="margin-top:18px"><b>For the team to confirm / add →</b> Where to apply for leave (form or ShiftTrack?), who approves it, whether the 24 CL are per year and if they carry over, half-day rules, and how sick leave is handled. Send these and I'll slot them in.</div>
 
   ${presenterMarkup()}
-  ${completeBtn('leaves')}
+  ${moduleGateHTML('leaves')}
   </div>`;
 }
 
@@ -2515,7 +2539,7 @@ function viewProcess(){return `
   <div class="pr-view">
   <h2 class="page-title">How We Work</h2>
   <p class="page-sub">A booking from start to finish — and the platforms where customers find us before they call.</p>
-  <div class="present-cta"><button class="btn btn-primary" id="presentBtn">Presenter mode</button><span class="present-hint">A narrated walkthrough with a voice-over host — turn your sound on.</span></div>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">A narrated walkthrough with a voice-over host — turn your sound on.</span></div>
 
   <div class="co-hero">
     <div class="plane">⚙️</div>
@@ -2565,7 +2589,7 @@ function viewProcess(){return `
     </div>
   </div>
   ${presenterMarkup()}
-  ${completeBtn('process')}
+  ${moduleGateHTML('process')}
   </div>`;
 }
 
@@ -2684,7 +2708,7 @@ function viewSales(){return `
   <div class="sa-view">
   <h2 class="page-title">Selling Skills</h2>
   <p class="page-sub">How to turn an enquiry into a confident booking — helpful and honest, never pushy.</p>
-  <div class="present-cta"><button class="btn btn-primary" id="presentBtn">Presenter mode</button><span class="present-hint">A narrated walkthrough — turn your sound on.</span></div>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">A narrated walkthrough — turn your sound on.</span></div>
 
   <div class="co-hero">
     <div class="plane">🎧</div>
@@ -2748,7 +2772,7 @@ function viewSales(){return `
   </div>
 
   ${presenterMarkup()}
-  ${completeBtn('sales')}
+  ${moduleGateHTML('sales')}
   </div>`;
 }
 
@@ -2850,7 +2874,7 @@ function viewVerify(){return `
   <p class="page-sub">Before a booking is final, we check the payment is genuine — it protects the customer and protects us from chargebacks.</p>
   <div class="note"><span>⚠️</span><div><b>Internal only.</b> Never share these checks with customers. The written policy and your supervisor are the final word.</div></div>
 
-  <div class="present-cta"><button class="btn btn-primary" id="presentBtn">Presenter mode</button><span class="present-hint">A narrated walkthrough — turn your sound on.</span></div>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">A narrated walkthrough — turn your sound on.</span></div>
 
   <div class="subtabs" id="vfSubtabs">
     <button class="subtab active" data-subtab="learn">Learn</button>
@@ -2905,7 +2929,7 @@ function viewVerify(){return `
   </div>
 
   ${presenterMarkup()}
-  ${completeBtn('verify')}
+  ${moduleGateHTML('verify')}
   </div>`;
 }
 /* ---- Verification checker logic (faithful to policy + update) ---- */
@@ -3004,7 +3028,7 @@ function viewIata(){
   return `
   <h2 class="page-title">IATA Codes & Pronunciation</h2>
   <p class="page-sub">Every airport has a 3-letter code. Learn the major ones, <b>hear</b> how each city is said, then <b>test your own pronunciation</b> with the mic.</p>
-  <div class="present-cta"><button class="btn btn-primary" id="presentBtn">Presenter mode</button><span class="present-hint">A narrated walkthrough with a voice-over host — turn your sound on.</span></div>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">A narrated walkthrough with a voice-over host — turn your sound on.</span></div>
 
   <div class="board-hero">
     <div class="bh-l">
@@ -3025,7 +3049,7 @@ function viewIata(){
 
   <div class="iata-grid" id="iataGrid" style="margin-top:16px"></div>
   ${presenterMarkup()}
-  ${completeBtn('iata')}`;
+  ${moduleGateHTML('iata')}`;
 }
 
 function viewAmadeus(){
@@ -3033,7 +3057,7 @@ function viewAmadeus(){
   <div class="am-view">
   <h2 class="page-title">Amadeus — Making a booking</h2>
   <p class="page-sub">New to this? Perfect — it starts from zero. <b>Learn</b> the commands, <b>Practise</b> in the terminal, and keep the <b>Reference</b> open beside you.</p>
-  <div class="present-cta"><button class="btn btn-primary" id="presentBtn">Presenter mode</button><span class="present-hint">A narrated walkthrough — turn your sound on.</span></div>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">A narrated walkthrough — turn your sound on.</span></div>
 
   <div class="subtabs" id="amSubtabs">
     <button class="subtab active" data-subtab="learn">Learn</button>
@@ -3109,7 +3133,7 @@ function viewAmadeus(){
   </div>
 
   ${presenterMarkup()}
-  ${completeBtn('amadeus')}
+  ${moduleGateHTML('amadeus')}
   </div>`;
 }
 
@@ -3261,24 +3285,90 @@ const EXAM_POOL = [
   {m:"Sales", q:"Customer goes quiet right after you quote. Best next move?", opts:["Assume the close — guide them to the next step while reassuring","Immediately drop the price","End the call","Repeat the whole pitch louder"], a:0},
 
   {m:"Process", q:"Which is the correct partial order of the booking lifecycle?", opts:["Quote → book/hold → verify payment → issue ticket","Issue ticket → quote → verify","Verify → quote → book","Book → issue → quote"], a:0},
+
+  {m:"Process", q:"A web quote request comes in. What's the very first thing to note?", opts:["Which market site it came from (US/CA/UK/ES)","The weather","The customer's age","Nothing in particular"], a:0},
+  {m:"Process", q:"Roughly how fast do we aim to give the customer a price?", opts:["About a minute","About an hour","A full day","A week"], a:0},
+  {m:"Process", q:"Which tool does the agent use to actually complete the booking?", opts:["Amadeus GDS","A spreadsheet","Email only","The customer's own app"], a:0},
+  {m:"Process", q:"After a trip is booked and verified, what's our ongoing commitment?", opts:["24/7 support, check-in help, and changes via MyBooking","No further contact","An automatic refund","A survey only"], a:0},
+  {m:"Process", q:"On which kind of sites are our fares listed for customers to find?", opts:["Metasearch sites like Kayak, Cheapflights, Momondo","Social media only","Classified ads","Nowhere"], a:0},
+  {m:"Process", q:"Why note the market site a customer came from?", opts:["It affects their currency and the right phone line","It changes the airline","It sets their seat","It has no effect"], a:0},
+
+  {m:"Leave", q:"How many casual leaves (CL) do you get?", opts:["24","12","6","Unlimited"], a:0},
+  {m:"Leave", q:"How much notice is needed to choose your own week-off day?", opts:["At least one week","One day","One hour","No notice"], a:0},
+  {m:"Leave", q:"A UL (unplanned leave) costs you…", opts:["One day's salary","Nothing","A CL","A warning only"], a:0},
+
+  {m:"Company", q:"Roughly how many airlines do we search for a fare?", opts:["15–20","2–3","Just one","Over 100"], a:0},
+  {m:"Company", q:"What kind of customer support do we promise?", opts:["24/7 care","Weekdays only","Email within a week","None"], a:0},
+  {m:"Company", q:"Which Spanish-language site serves our Hispanic customers?", opts:["es.cheapticketsdeal.com","spanish.ctd.com","cheapticketsdeal.es","ctd-espanol.com"], a:0},
+
+  {m:"Sales", q:"A customer says \"let me think about it.\" Best move?", opts:["Reassure and gently guide them to lock the fare now, noting the 24-hour change window","Pressure them hard","End the call","Raise the price"], a:0},
+  {m:"Sales", q:"Right tone when a customer is angry about a delay?", opts:["Calm, empathetic, solution-focused","Defensive","Dismissive","Matching their anger"], a:0},
+  {m:"Sales", q:"\"Sell on value, not just price\" means…", opts:["Highlight the service, support and fare together","Only ever quote the cheapest number","Never discuss price","Always be the most expensive"], a:0},
+
+  {m:"Verification", q:"The \"I approve\" email primarily protects against…", opts:["Chargebacks","Late flights","Weather delays","Lost baggage"], a:0},
+  {m:"Verification", q:"For travel within 30 days, what do you always try to get from the cardholder?", opts:["An \"I approve\" email","A selfie","A deposit","Nothing"], a:0},
+  {m:"Verification", q:"Verification checks are…", opts:["Internal — never shared with customers","Printed on the ticket","Posted publicly","Optional always"], a:0},
+
+  {m:"IATA", q:"Which code is New York JFK?", opts:["JFK","LGA","EWR","JKF"], a:0},
+  {m:"IATA", q:"Which code is Los Angeles?", opts:["LAX","LAS","SFO","LGB"], a:0},
+  {m:"IATA", q:"Which code is London Gatwick?", opts:["LGW","LHR","STN","LCY"], a:0},
+
+  {m:"Amadeus", q:"Which entry ignores all changes and reverts the PNR?", opts:["IG (Ignore)","ER","RT","XE"], a:0},
+  {m:"Amadeus", q:"Which displays the PNR you're currently working in?", opts:["RT","DD","FXP","NM"], a:0},
 ];
-const EXAM_N = 25;        // questions per attempt
+const EXAM_N = 100;       // questions per attempt
 const EXAM_PASS = 85;     // percent to pass
 let exam = {qs:[], i:0, answers:[]};
 
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-function viewExam(){return `
+function viewExam(){
+  if(!allModulesDone()){
+    const done = MODULES.filter(m=>progress[m.id]>=100).length;
+    return `<div class="ex-view"><h2 class="page-title">Final Exam</h2>
+      <div class="ex-locked"><div class="ex-ico">🔒</div>
+        <h3>Complete every module first</h3>
+        <p>The final exam unlocks once you've passed the checkpoint in all ${MODULES.length} modules. You've completed <b>${done} of ${MODULES.length}</b> so far.</p>
+        <button class="btn btn-primary" onclick="go('dash')">Back to modules</button>
+      </div></div>`;
+  }
+  return `
   <div class="ex-view">
   <h2 class="page-title">Final Exam</h2>
   <p class="page-sub">${EXAM_N} questions drawn from across every module. Score <b>${EXAM_PASS}%</b> or higher to pass and unlock your certificate. You can retake it as often as you like.</p>
   <div id="examBox" class="ex-box"></div>
   </div>`;
 }
-function initExam(){ examStart(); }
+function initExam(){ if(allModulesDone()) examStart(); }
 function examStart(){
+  if(examSession && examSession.qs && examSession.qs.length && examSession.i < examSession.qs.length){
+    return examRenderResume();
+  }
   exam.qs = shuffle(EXAM_POOL).slice(0, EXAM_N);
   exam.i = 0; exam.answers = [];
+  examRenderIntro();
+}
+function examRenderResume(){
+  const box=document.getElementById('examBox'); if(!box) return;
+  const at=examSession.i+1, tot=examSession.qs.length;
+  box.innerHTML = `
+    <div class="ex-intro">
+      <div class="ex-ico">⏸️</div>
+      <h3>Welcome back${agentName?', '+agentName.split(/\\s+/)[0]:''}.</h3>
+      <p>You have an exam in progress — you were on <b>question ${at} of ${tot}</b>. Pick up where you left off, or start fresh.</p>
+      <div class="ex-actions">
+        <button class="btn btn-primary" onclick="examResume()">Resume (question ${at}) →</button>
+        <button class="btn btn-ghost" onclick="examFresh()">Start over</button>
+      </div>
+    </div>`;
+}
+function examResume(){
+  exam.qs = examSession.qs; exam.i = examSession.i; exam.answers = examSession.answers||[];
+  examRenderQ();
+}
+function examFresh(){
+  examSession = null; persist();
+  exam.qs = shuffle(EXAM_POOL).slice(0, EXAM_N); exam.i=0; exam.answers=[];
   examRenderIntro();
 }
 function examRenderIntro(){
@@ -3287,11 +3377,15 @@ function examRenderIntro(){
     <div class="ex-intro">
       <div class="ex-ico">📝</div>
       <h3>Ready when you are${agentName?', '+agentName.split(/\s+/)[0]:''}.</h3>
-      <p>${EXAM_N} multiple-choice questions. No time limit. Your best score is saved${examBest?` — currently <b>${examBest}%</b>`:''}.</p>
+      <p>${EXAM_N} multiple-choice questions. No time limit — you can stop and resume anytime. Your best score is saved${examBest?` — currently <b>${examBest}%</b>`:''}.</p>
       <button class="btn btn-primary" onclick="examBegin()">Start the exam →</button>
     </div>`;
 }
-function examBegin(){ exam.i=0; exam.answers=[]; examRenderQ(); }
+function examBegin(){
+  exam.qs = shuffle(EXAM_POOL).slice(0, EXAM_N); exam.i=0; exam.answers=[];
+  examSession = {qs:exam.qs, i:0, answers:[]}; persist();
+  examRenderQ();
+}
 function examRenderQ(){
   const box=document.getElementById('examBox'); if(!box) return;
   if(exam.i>=exam.qs.length){ return examFinish(); }
@@ -3306,6 +3400,7 @@ function examRenderQ(){
 function examPick(idx){
   exam.answers[exam.i] = idx;
   exam.i++;
+  examSession = {qs:exam.qs, i:exam.i, answers:exam.answers}; persist();
   examRenderQ();
 }
 function examFinish(){
@@ -3314,6 +3409,7 @@ function examFinish(){
   const passed = pct>=EXAM_PASS;
   examBest = Math.max(examBest, pct);
   if(passed) examPassed = true;
+  examSession = null;            // test complete — clear the resume point
   persist();
   // topic breakdown of misses
   const missed = {};
@@ -3528,6 +3624,141 @@ function renderAdmin(rows){
     <div style="margin-top:12px"><button class="btn btn-ghost" onclick="adminLoad()">Refresh now</button></div>`);
 }
 
+/* ============================================================
+   MODULE CHECKPOINTS — must pass to complete a module
+   ============================================================ */
+const MODULE_TAG = {company:"Company", leaves:"Leave", iata:"IATA", amadeus:"Amadeus", process:"Process", sales:"Sales", verify:"Verification"};
+const GATE_N = 6, GATE_PASS = 80;
+function allModulesDone(){ return MODULES.every(m=>progress[m.id]>=100); }
+function nextModuleId(mid){ const i=MODULES.findIndex(m=>m.id===mid); return (i>=0&&i<MODULES.length-1)?MODULES[i+1].id:null; }
+function moduleGateHTML(mid){ return `<h3 class="sec">Module checkpoint</h3><div id="gateBox" class="ex-box"></div>`; }
+function gatePool(mid){ const t=MODULE_TAG[mid]; return EXAM_POOL.filter(q=>q.m===t); }
+let gq=null;
+function initModuleGate(mid){
+  const box=document.getElementById('gateBox'); if(!box) return;
+  if(mid==='iata') return iaxIntro(box);
+  if(progress[mid]>=100){
+    const nxt=nextModuleId(mid);
+    box.innerHTML=`<div class="gate-result pass"><div class="gr-score">✓</div><h4>Checkpoint passed</h4><p>You've completed this module. Retake the checkpoint, or move on.</p><button class="btn btn-primary" onclick="gateStart('${mid}')">Retake checkpoint</button>${nxt?`<button class="btn btn-ghost" onclick="go('${nxt}')">Next module →</button>`:`<button class="btn btn-ghost" onclick="go('exam')">Final exam →</button>`}</div>`;
+  } else {
+    const n=Math.min(GATE_N, gatePool(mid).length);
+    box.innerHTML=`<div class="gate-intro"><p><b>You must pass this checkpoint to complete the module and move on.</b> ${n} questions drawn from everything above — score <b>${GATE_PASS}%</b> or higher. Unlimited tries.</p><button class="btn btn-primary" onclick="gateStart('${mid}')">Start checkpoint →</button></div>`;
+  }
+}
+function gateStart(mid){ const pool=gatePool(mid); gq={mid, qs:shuffle(pool).slice(0,Math.min(GATE_N,pool.length)), i:0, ans:[]}; gateRenderQ(); }
+function gateRenderQ(){
+  const box=document.getElementById('gateBox'); if(!box) return;
+  if(gq.i>=gq.qs.length) return gateFinish();
+  const q=gq.qs[gq.i]; const pct=Math.round(gq.i/gq.qs.length*100);
+  box.innerHTML=`<div class="ex-bar"><i style="width:${pct}%"></i></div>
+    <div class="ex-meta">Question ${gq.i+1} of ${gq.qs.length} <span class="ex-tag">${q.m}</span></div>
+    <div class="ex-q">${q.q}</div>
+    <div class="ex-opts">${q.opts.map((o,idx)=>`<button class="ex-opt" onclick="gatePick(${idx})">${escHtml(o)}</button>`).join('')}</div>`;
+}
+function gatePick(idx){ gq.ans[gq.i]=idx; gq.i++; gateRenderQ(); }
+function gateFinish(){
+  const correct=gq.qs.reduce((n,q,i)=>n+(gq.ans[i]===q.a?1:0),0);
+  const pct=Math.round(correct/gq.qs.length*100), passed=pct>=GATE_PASS;
+  if(passed && progress[gq.mid]<100){ progress[gq.mid]=100; persist(); refreshNavState(); }
+  const nxt=nextModuleId(gq.mid), box=document.getElementById('gateBox'); if(!box) return;
+  box.innerHTML=`<div class="gate-result ${passed?'pass':'fail'}"><div class="gr-score">${pct}%</div>
+    <h4>${passed?'Checkpoint passed ✓':'Not yet — keep going'}</h4>
+    <p>You got ${correct} of ${gq.qs.length}. ${passed?'This module is now complete.':`You need ${GATE_PASS}% to pass. Review the module above, then try again.`}</p>
+    ${passed?(nxt?`<button class="btn btn-primary" onclick="go('${nxt}')">Next module →</button>`:`<button class="btn btn-primary" onclick="go('exam')">Go to final exam →</button>`):`<button class="btn btn-primary" onclick="gateStart('${gq.mid}')">Try again</button>`}
+    <button class="btn btn-ghost" onclick="go('dash')">Dashboard</button></div>`;
+}
+
+/* ============================================================
+   IATA AIRPORT TEST — 100 questions: pronounce + locate
+   ============================================================ */
+const IAX_N = 100, IAX_PASS = 80;
+let iax=null;
+function jsq(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function iaxAirports(){ const out=[]; Object.keys(IATA).forEach(rk=>{ (IATA[rk]||[]).forEach(a=>{ if(a.st && a.say && a.c) out.push(Object.assign({rk},a)); }); }); return out; }
+function iaxIntro(box){
+  if(progress.iata>=100){
+    const nxt=nextModuleId('iata');
+    box.innerHTML=`<div class="gate-result pass"><div class="gr-score">✓</div><h4>Airport test passed</h4><p>You've completed the IATA module. Retake the test, or move on.</p><button class="btn btn-primary" onclick="iaxStart()">Retake the ${IAX_N}-question test</button>${nxt?`<button class="btn btn-ghost" onclick="go('${nxt}')">Next module →</button>`:''}</div>`;
+    return;
+  }
+  if(iaxSession && iaxSession.qs && iaxSession.qs.length && iaxSession.i < iaxSession.qs.length){
+    const at=iaxSession.i+1, tot=iaxSession.qs.length;
+    box.innerHTML=`<div class="gate-intro"><p><b>⏸️ You have the airport test in progress</b> — you were on airport <b>${at} of ${tot}</b> (score so far ${iaxSession.correct||0}). Pick up where you left off, or start fresh.</p><button class="btn btn-primary" onclick="iaxResume()">Resume (airport ${at}) →</button> <button class="btn btn-ghost" onclick="iaxFresh()">Start over</button></div>`;
+    return;
+  }
+  box.innerHTML=`<div class="gate-intro"><p><b>Airport Test — ${IAX_N} questions. You must pass this to complete the module.</b><br>For each airport code you'll: <b>(1)</b> say the airport name out loud (tap 🎤 Say it to check yourself), and <b>(2)</b> choose its state / province / country. Score <b>${IAX_PASS}%</b> or higher. You can stop and resume anytime. Unlimited tries.</p><button class="btn btn-primary" onclick="iaxStart()">Start the airport test →</button></div>`;
+}
+function iaxResume(){
+  iax={ qs:iaxSession.qs, i:iaxSession.i, correct:iaxSession.correct||0, answered:false };
+  iaxRenderQ();
+}
+function iaxFresh(){ iaxSession=null; persist(); iaxStart(); }
+function iaxOptions(item, pool){
+  let same=[...new Set(pool.filter(x=>x.rk===item.rk && x.st!==item.st).map(x=>x.st))];
+  let opts=shuffle(same).slice(0,3);
+  if(opts.length<3){ const glob=[...new Set(pool.filter(x=>x.st!==item.st && opts.indexOf(x.st)<0).map(x=>x.st))]; opts=opts.concat(shuffle(glob).slice(0,3-opts.length)); }
+  return shuffle([item.st, ...opts]);
+}
+function iaxStart(){
+  const pool=iaxAirports(), n=Math.min(IAX_N, pool.length);
+  iax={ qs: shuffle(pool).slice(0,n).map(a=>({a, opts:iaxOptions(a,pool)})), i:0, correct:0, answered:false };
+  iaxRenderQ();
+}
+function iaxRenderQ(){
+  const box=document.getElementById('gateBox'); if(!box) return;
+  if(iax.i>=iax.qs.length) return iaxFinish();
+  iaxSession = {qs:iax.qs, i:iax.i, correct:iax.correct}; persist();   // resume point
+  const q=iax.qs[iax.i]; iax.answered=false;
+  const pct=Math.round(iax.i/iax.qs.length*100);
+  box.innerHTML=`<div class="ex-bar"><i style="width:${pct}%"></i></div>
+    <div class="ex-meta">Airport ${iax.i+1} of ${iax.qs.length} · Score ${iax.correct}</div>
+    <div class="iax-code">${q.a.c}</div>
+    <div class="iax-step">Step 1 — say the airport name out loud</div>
+    <div class="iax-say">
+      <button class="mini listen" onclick="hearIt('${jsq(q.a.say)}','${q.a.c}')">🔊 Hear it</button>
+      <button class="mini slow" onclick="hearItSlow(this,'${jsq(q.a.say)}','${q.a.c}')">🐢 Slow</button>
+      <button class="mini test" onclick="iaxSayIt(this,'${jsq(q.a.say)}')">🎤 Say it</button>
+    </div>
+    <div id="iaxSayRes" style="font-size:12.5px;color:var(--muted);margin-top:7px;min-height:16px"></div>
+    <div class="iax-step">Step 2 — which state / province / country is it in?</div>
+    <div class="ex-opts">${q.opts.map(o=>`<button class="ex-opt" onclick="iaxPick(this,${o===q.a.st})">${escHtml(o)}</button>`).join('')}</div>
+    <div id="iaxReveal"></div>`;
+}
+function iaxSayIt(btn, text){
+  const res=document.getElementById('iaxSayRes');
+  if(!SR){ if(res) res.textContent='🎤 Speech check needs Chrome or Edge — use 🔊 Hear it to learn the sound.'; return; }
+  const rec=new SR(); rec.lang='en-US'; rec.interimResults=false; rec.maxAlternatives=6;
+  if(res) res.textContent='🎙️ Listening…';
+  try{ rec.start(); }catch(e){}
+  rec.onresult=ev=>{ const alts=Array.from(ev.results[0]).map(r=>r.transcript); let best=0,h=alts[0]||''; alts.forEach(a=>{const s=matchScore(a,text); if(s>best){best=s;h=a;}}); const pct=Math.round(best*100);
+    if(res) res.textContent = best>=0.82?`✅ Great — heard "${h.trim()}" (${pct}%)` : best>=0.55?`🟡 Close — heard "${h.trim()}" (${pct}%)` : `🔁 Heard "${h.trim()}" (${pct}%) — tap 🔊 and try again`; };
+  rec.onerror=ev=>{ if(res) res.textContent = ev.error==='not-allowed'?'🔒 Allow mic access and retry.':'⚠️ Mic error — try again.'; };
+}
+function iaxPick(btn, correct){
+  if(iax.answered) return; iax.answered=true;
+  const q=iax.qs[iax.i];
+  if(correct) iax.correct++;
+  const box=document.getElementById('gateBox');
+  box.querySelectorAll('.ex-opts .ex-opt').forEach(b=>{ b.style.pointerEvents='none'; if(b.textContent===q.a.st) b.classList.add('correct'); });
+  if(!correct) btn.classList.add('wrong');
+  const rev=document.getElementById('iaxReveal');
+  rev.className='iax-reveal '+(correct?'ok':'no');
+  const last=(iax.i+1>=iax.qs.length);
+  rev.innerHTML=`${correct?'✅ Correct.':'❌ Not quite.'} <b>${q.a.c}</b> is <b>${escHtml(q.a.city)}</b> (${escHtml(q.a.air)}), in <b>${escHtml(q.a.st)}</b>.<div style="margin-top:10px"><button class="btn btn-primary" onclick="iaxNext()">${last?'See results →':'Next airport →'}</button></div>`;
+}
+function iaxNext(){ iax.i++; iaxRenderQ(); }
+function iaxFinish(){
+  const pct=Math.round(iax.correct/iax.qs.length*100), passed=pct>=IAX_PASS;
+  iaxSession=null;               // test complete — clear the resume point
+  if(passed && progress.iata<100){ progress.iata=100; persist(); refreshNavState(); } else { persist(); }
+  const nxt=nextModuleId('iata'), box=document.getElementById('gateBox'); if(!box) return;
+  box.innerHTML=`<div class="gate-result ${passed?'pass':'fail'}"><div class="gr-score">${pct}%</div>
+    <h4>${passed?'Airport test passed ✓':'Not yet — keep practising'}</h4>
+    <p>You located ${iax.correct} of ${iax.qs.length} airports correctly. ${passed?'The IATA module is now complete.':`You need ${IAX_PASS}% to pass. Review the codes above and try again.`}</p>
+    ${passed?(nxt?`<button class="btn btn-primary" onclick="go('${nxt}')">Next module →</button>`:''):`<button class="btn btn-primary" onclick="iaxStart()">Try again</button>`}
+    <button class="btn btn-ghost" onclick="go('dash')">Dashboard</button></div>`;
+}
+
 const VIEWS = {
   dash:viewDash, company:viewCompany, leaves:viewLeaves, iata:viewIata,
   amadeus:viewAmadeus, process:viewProcess, sales:viewSales, verify:viewVerify,
@@ -3562,6 +3793,7 @@ function go(view){
   if(view==='exam') initExam();
   if(view==='roleplay') initRoleplay();
   if(view==='admin') initAdmin();
+  if(MODULES.find(x=>x.id===view)) initModuleGate(view);
   refreshNavState();
 }
 function refreshNavState(){
