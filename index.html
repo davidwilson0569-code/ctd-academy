@@ -1917,7 +1917,7 @@ const CO_PROMISES = [
   {ico:"📞", t:"24/7 customer care", d:"Someone's always reachable — by phone, or at support@cheapticketsdeal.com."},
   {ico:"🏷️", t:"Price-match promise", d:"Competitive, up-to-date fares on major domestic and international routes."},
   {ico:"✈️", t:"15–20 airlines", d:"One call searches fares other sites miss — including unpublished deals."},
-  {ico:"🛡️", t:"A trusted agency", d:"BBB-listed, with a focus on transparency and looking after travellers."},
+  {ico:"🛡️", t:"A trusted agency", d:"listed with the Better Business Bureau, with a focus on transparency and looking after travellers."},
 ];
 const CO_QUIZ = [
   {q:"How quickly do we aim to give a customer a quote?", opts:["About a minute","About an hour","Within 24 hours"], a:0, why:"Speed is our edge — we aim for a quote in roughly a minute."},
@@ -1999,7 +1999,7 @@ function viewCompany(){return `
     </a>
     <a class="listing rev" href="https://www.bbb.org/us/mn/bloomington/profile/online-travel-agency/cheapticketsdealcom-0704-1000025331" target="_blank" rel="noopener noreferrer">
       <div class="lst-name">🛡️ Better Business Bureau</div>
-      <div class="lst-markets">Accredited BBB profile</div>
+      <div class="lst-markets">Accredited Better Business Bureau profile</div>
       <div class="lst-tags"><span class="tag go">View profile ↗</span></div>
     </a>
   </div>
@@ -2113,7 +2113,7 @@ const CO_BEATS = [
   {sel:"#coWho", chapter:"CHAPTER 1 · WHO WE ARE", dur:9000, cap:"As a travel consolidator, we can reach special unpublished fares that aren't always shown on public websites. We serve three markets — the US, Canada and the UK — each with its own site, plus a Spanish-language site."},
   {sel:".cj", chapter:"CHAPTER 2 · THE BOOKING JOURNEY", action:coPlay, dur:10000, cap:"Every booking follows the same path: the customer reaches out, we find the fare, we give a quick quote, we book it in the system, and we support the trip 24/7."},
   {sel:"#coMarkets", chapter:"CHAPTER 3 · OUR MARKETS", action:coCycleMarkets, dur:9000, cap:"Always note which market a customer came from — it affects their currency, their local phone line, and the deals available to them."},
-  {sel:".flip-grid", chapter:"CHAPTER 4 · OUR PROMISE", action:coFlipPromises, dur:9000, cap:"Here's what we promise every customer: 24/7 care, a price-match promise, access to 15 to 20 airlines, and the trust of a BBB-listed agency."},
+  {sel:".flip-grid", chapter:"CHAPTER 4 · OUR PROMISE", action:coFlipPromises, dur:9000, cap:"Here's what we promise every customer: 24/7 care, a price-match promise, access to 15 to 20 airlines, and the trust of a listed with the Better Business Bureau agency."},
   {sel:"#coWhy", chapter:"CHAPTER 5 · WHY WE'RE CHEAPER", dur:9000, cap:"The question customers ask most is why our fares are lower. The honest answer: we're an IATA-accredited consolidator with access to unpublished fares, and we pass the savings on. Always use the approved wording for this."},
   {sel:"#coReach", chapter:"CHAPTER 6 · HOW TO REACH US", dur:7000, cap:"Customers reach us by phone, by email, or through self-service tools on the site like Online Check-In and MyBooking."},
   {sel:"#cquiz", chapter:"CHAPTER 7 · KNOWLEDGE CHECK", dur:6000, cap:"Finally, a quick knowledge check to lock it all in. That's CheapTicketsDeal — welcome aboard!"},
@@ -2177,6 +2177,7 @@ const SALES_BEATS = [
   {sel:"#pbTime", tab:"playbook", chapter:"PLAYBOOK · KEEP IT TIGHT", dur:9000, cap:"Aim to close within twenty to twenty-five minutes. Quote fast, offer two or three options instead of ten, set expectations while you research, then ask for the booking."},
   {sel:"#pbRefund", tab:"playbook", chapter:"PLAYBOOK · REFUNDABLE VS INSURANCE", dur:13000, cap:"Know the difference. A refundable fare lets the customer cancel the ticket itself for a refund, under the airline's rules. Travel insurance is a separate policy that pays out for covered reasons. Pitch the refundable fare honestly — never promise a credit the fare doesn't actually give."},
   {sel:"#pbMatch", tab:"playbook", chapter:"PLAYBOOK · PRICE MATCH", dur:12000, cap:"We match a genuine like-for-like price within twenty-four hours. If a customer quotes a cheaper price elsewhere, check it's the same flights and conditions, and gently suggest they confirm it's really bookable — some sites show a teaser price that jumps once you call."},
+  {sel:"#pbReviews", tab:"playbook", chapter:"PLAYBOOK · ASKING FOR REVIEWS", dur:13000, cap:"When a customer is clearly happy, ask for a review before you hang up. Pick one platform — Google, Trustpilot or the Better Business Bureau — and text or email them the direct link so it's effortless. Ask only customers you've genuinely helped, ask once, and thank them either way. Never pay for, write, or coach a review — just invite an honest one."},
 ];
 const AM_BEATS = [
   {sel:".lesson-tabs", tab:"learn", chapter:"AMADEUS · OVERVIEW", dur:9000, cap:"Amadeus is the system we use to find flights and make bookings. Don't be intimidated — we start from zero and learn it one small step at a time."},
@@ -2781,7 +2782,7 @@ const OBJECTIONS = [
     ]},
   { customer:"How do I know this is a real, trusted company?",
     options:[
-      {t:"Give proof they can check: we're IATA-certified and BBB-accredited, listed on Kayak and Momondo, with reviews on Trustpilot and Google — plus their booking comes with the airline's record locator.", v:"best", why:"Specific, verifiable proof beats vague reassurance — exactly our approved answer. A real booking reference is the strongest trust signal there is."},
+      {t:"Give proof they can check: we're IATA-certified and accredited by the Better Business Bureau, listed on Kayak and Momondo, with reviews on Trustpilot and Google — plus their booking comes with the airline's record locator.", v:"best", why:"Specific, verifiable proof beats vague reassurance — exactly our approved answer. A real booking reference is the strongest trust signal there is."},
       {t:"Just keep repeating 'trust me, we're 100% trusted'.", v:"avoid", why:"Repetition isn't proof. Give them something they can actually check."},
       {t:"Get offended and tell them to book elsewhere.", v:"avoid", why:"Never take it personally — skepticism is normal when someone's about to hand over a card."},
     ]},
@@ -2807,10 +2808,10 @@ const OBJECTIONS = [
 
 const SALES_SCRIPTS = [
   {cat:"Trust", q:"Are you a legitimate business?",
-   a:"Absolutely. CheapTicketsDeal is an <b>IATA-certified</b> travel agency and <b>BBB-accredited</b> — both confirm we're a legitimate, reputable business that follows fair practices. You'll also find us listed on trusted platforms like <b>Kayak</b> and <b>Momondo</b>, which only feature verified agencies, and you're welcome to read our reviews on Trustpilot, Google, and the BBB.",
-   tip:"Lead with proof the customer can check themselves — IATA, BBB, and the review links."},
+   a:"Absolutely. CheapTicketsDeal is an <b>IATA-certified</b> travel agency and <b>accredited by the Better Business Bureau</b> — both confirm we're a legitimate, reputable business that follows fair practices. You'll also find us listed on trusted platforms like <b>Kayak</b> and <b>Momondo</b>, which only feature verified agencies, and you're welcome to read our reviews on Trustpilot, Google, and the Better Business Bureau.",
+   tip:"Lead with proof the customer can check themselves — IATA, Better Business Bureau, and the review links."},
   {cat:"Trust", q:"Why do you have so many negative reviews online?",
-   a:"That's a fair question. Like any travel agency, we have both positive and negative reviews across Google, Trustpilot, and the BBB. Customers are simply more likely to post when something goes wrong — and most of those cases involve airline <b>cancellations or schedule changes</b>, which are controlled by the airline, not us. We take every piece of feedback seriously and use it to keep improving.",
+   a:"That's a fair question. Like any travel agency, we have both positive and negative reviews across Google, Trustpilot, and the Better Business Bureau. Customers are simply more likely to post when something goes wrong — and most of those cases involve airline <b>cancellations or schedule changes</b>, which are controlled by the airline, not us. We take every piece of feedback seriously and use it to keep improving.",
    tip:"Acknowledge honestly, give context, and never sound defensive."},
   {cat:"Pricing", q:"Reviews say you call and increase the fare — is that true?",
    a:"In the large majority of cases, we honor your booking exactly as reserved. Because we offer deeply discounted fares, there are <b>rare</b> occasions when the airline doesn't release the original discount. If that happens, our first priority is always to find you an alternative <b>at the same price</b>. Only in unusual cases would a fare need adjusting — and even then it would still be discounted and lower than booking directly with the airline.",
@@ -2876,7 +2877,7 @@ function viewSales(){return `
 
   <div class="pb-promo" onclick="setSubTab('sa','playbook')">
     <div class="pb-promo-ico">⭐</div>
-    <div class="pb-promo-txt"><b>Sales Playbook — our most important real-world tactics</b><span>Alternate airports &amp; low-cost fares · keeping calls to 20–25 min · refundable fares vs insurance · the price-match guarantee.</span></div>
+    <div class="pb-promo-txt"><b>Sales Playbook — our most important real-world tactics</b><span>Alternate airports &amp; low-cost fares · keeping calls to 20–25 min · refundable fares vs insurance · the price-match guarantee · asking for reviews.</span></div>
     <div class="pb-promo-go">Open →</div>
   </div>
 
@@ -2981,6 +2982,24 @@ function viewSales(){return `
       <li><b>Match what's real.</b> If it's a genuine like-for-like fare inside the 24-hour window, honour the match.</li>
     </ul>
     <div class="sx"><div class="sx-h">Try saying</div>"Happy to look at that for you — we match a like-for-like price within 24 hours. One tip: it's worth confirming that price is actually bookable, because some sites show a low teaser and then raise it when you call. If it's the same flights and conditions, I'll match it."</div>
+
+    <h3 class="sec" id="pbReviews">Asking for reviews — Google, Trustpilot &amp; Better Business Bureau</h3>
+    <div class="note"><span>⭐</span><div><b>Why this matters.</b> Honest reviews from happy customers help other travellers find and trust us — Google reviews lift how easily we're found in search, Trustpilot and the Better Business Bureau build confidence for US customers deciding whether to book. The best time to ask is the moment a customer is clearly happy, before you hang up.</div></div>
+    <ul class="pb-list">
+      <li><b>Ask only when you've genuinely helped.</b> If a customer is unhappy, fix the problem first — never ask an unhappy customer for a review.</li>
+      <li><b>Pick one platform per customer.</b> A single clear ask converts far better than offering all three. Google for most; Better Business Bureau for US customers who use it; Trustpilot as well.</li>
+      <li><b>Send the direct link there and then.</b> People want to help but won't go hunting — text or email the exact review link while you're still on the call.</li>
+      <li><b>Ask once, and thank them either way.</b> Never nag, and never make booking feel conditional on a review.</li>
+    </ul>
+    <div class="sx"><div class="sx-h">Ask right after the win</div>"I'm really glad we got that sorted for you, [Name]. If you have a quick minute, it would genuinely help our team if you'd share your experience — I can send you the link for Google, Trustpilot, or the Better Business Bureau, whichever's easiest. No pressure at all."</div>
+    <div class="sx"><div class="sx-h">Make it effortless</div>"Would it be okay if I text or email you our Google review link? It takes about a minute, and honest feedback really helps a small team like ours."</div>
+    <div class="sx"><div class="sx-h">Make it specific</div>"If today was worth it — finding that [route] fare and getting it booked — a short note about what stood out would mean a lot. You can leave it on Google or the Better Business Bureau, whichever you use."</div>
+    <div class="pb-mini"><b>Links to send —</b> Google: [paste Google review link] &nbsp;|&nbsp; Trustpilot: [paste Trustpilot link] &nbsp;|&nbsp; Better Business Bureau: [paste Better Business Bureau review link]</div>
+    <div class="pitfall"><h4>⚠️ Keep reviews genuine — the rules are strict</h4><ul>
+      <li><b>Never pay, discount or reward the customer</b> for leaving a review, and never write, pre-fill or coach what they should say.</li>
+      <li><b>Don't ask only happy customers to leave 5 stars</b> or screen out unhappy ones — just invite an honest review.</li>
+      <li>Google and the Better Business Bureau actively flag or remove incentivised and fake reviews, and the <b>US FTC's fake-review rule</b> applies to our American customers. A genuine invitation is always fine; anything beyond that puts our whole profile — and the business — at risk.</li>
+    </ul></div>
   </div>
 
   ${presenterMarkup()}
@@ -3423,7 +3442,7 @@ const EXAM_POOL = [
   {m:"Verification", q:"What words must the cardholder's email approval contain?", opts:['"I approve" / "I approve this purchase"',"Their full address","A photo of the card"], a:0},
   {m:"Verification", q:"After 30 days with a passed online check (normal fare), what else is needed?", opts:["Charge verification","A verbal confirmation from the cardholder","Nothing at all"], a:1},
   {m:"Verification", q:"On every booking you must always…", opts:["Email the booking & ticket confirmation to the cardholder","Call them three times","Take a deposit"], a:0},
-  {m:"Sales", q:"A customer asks 'are you legit?' — best move?", opts:["Say 'trust me'","Cite IATA, BBB, Kayak/Momondo and the reviews","Get offended"], a:1},
+  {m:"Sales", q:"A customer asks 'are you legit?' — best move?", opts:["Say 'trust me'","Cite IATA, Better Business Bureau, Kayak/Momondo and the reviews","Get offended"], a:1},
   {m:"Sales", q:"The receipt shows a lower fare than charged. Best response?", opts:["Say you're not sure why","Explain the supplier/merchant/issuance fees and offer an itemised invoice","Tell them to ignore it"], a:1},
   {m:"Sales", q:"Customer wants to 'call back later' to book. Best response?", opts:["Pressure them it'll vanish in 5 minutes","Note fares can sell out and mention the 24-hour difference guarantee","Just hang up"], a:1},
   {m:"Sales", q:"Medical emergency, non-refundable ticket — what can you offer?", opts:["A guaranteed refund","To submit a credit-waiver request to the airline (no guarantee)","Nothing, end the call"], a:1},
@@ -3439,7 +3458,7 @@ const EXAM_POOL = [
 
   {m:"Company", q:"Which of these is the UK customer phone line?", opts:["0800-069-8596","1-888-910-0597","1-888-964-5001","1-800-069-8596"], a:0},
   {m:"Company", q:"A customer calls the US line. Which number did they dial?", opts:["1-888-910-0597","1-888-964-5001","0800-069-8596","1-888-019-0597"], a:0},
-  {m:"Company", q:"Which body's accreditation confirms we're a legitimate agency?", opts:["IATA (and we're BBB-accredited)","The FAA","The TSA","The FCC"], a:0},
+  {m:"Company", q:"Which body's accreditation confirms we're a legitimate agency?", opts:["IATA (and we're accredited by the Better Business Bureau)","The FAA","The TSA","The FCC"], a:0},
   {m:"Company", q:"A Canadian customer should be quoted in which currency?", opts:["CAD","USD","GBP","EUR"], a:0},
   {m:"Company", q:"\"Unpublished\" or \"hacker\" fares are cheaper because…", opts:["They're negotiated consolidator fares not on the airline's site","They're standby-only seats","They're expired tickets","They skip taxes"], a:0},
 
@@ -3476,7 +3495,7 @@ const EXAM_POOL = [
   {m:"Company", q:"What is CTD's IATA accreditation number?", opts:["24761343","24716343","24761334","27461343"], a:0},
   {m:"Company", q:"A customer dials the Canada line. Which number is it?", opts:["1-888-964-5001","1-888-910-0597","0800-069-8596","1-888-946-5001"], a:0},
   {m:"Company", q:"Which is the honest, approved way to describe why our fares are lower?", opts:["Negotiated unpublished consolidator fares we pass on","A pricing glitch to grab fast","We undercut and add fees later","We sell expired tickets"], a:0},
-  {m:"Company", q:"Besides IATA, which accreditation do we cite as a trust signal?", opts:["BBB","FAA","TSA","DOT"], a:0},
+  {m:"Company", q:"Besides IATA, which accreditation do we cite as a trust signal?", opts:["Better Business Bureau","FAA","TSA","DOT"], a:0},
 
   {m:"IATA", q:"Which airport code is Cancún, Mexico?", opts:["CUN","CUZ","CXM","CNU"], a:0},
   {m:"IATA", q:"Harry Reid International (LAS) serves which city?", opts:["Las Vegas","Los Angeles","Reno","Lansing"], a:0},
@@ -3552,12 +3571,38 @@ const EXAM_POOL = [
   {m:"Sales", q:"Which actually makes the TICKET itself refundable?", opts:["A refundable fare","Travel insurance","A loyalty card","A carry-on bag"], a:0},
   {m:"Sales", q:"Hidden-city ticketing is…", opts:["Against most airlines' contracts — don't advise it or book it without senior approval","A great everyday tactic","Required on every booking","The same as a refundable fare"], a:0},
   {m:"Sales", q:"A customer cites a cheaper price elsewhere. You should…", opts:["Check it's like-for-like and match within 24 hours, noting some teaser prices rise on the call","Immediately undercut by any amount","Refuse to discuss it","Tell them to book elsewhere"], a:0},
+  {m:"Sales", q:"When is the best time to ask a customer for a review?", opts:["Right after you've genuinely helped them, before hanging up","Only weeks later by email","Before you've solved anything","Never"], a:0},
+  {m:"Sales", q:"Which is NOT allowed when asking for reviews?", opts:["Paying or discounting the customer for leaving one","Sending them the direct review link","Asking once and thanking them","Inviting an honest review"], a:0},
 
   {m:"IATA", q:"A customer says they're flying to \"Portland.\" What must you confirm?", opts:["Oregon (PDX) or Maine (PWM)","Nothing — there's only one","The airline only","Their seat"], a:0},
   {m:"IATA", q:"For \"San Jose,\" SJO is which airport?", opts:["San José, Costa Rica","San Jose, California","San Juan","Santiago"], a:0},
+
+  {m:"Airlines", q:"After the spring-2026 hikes, what are Delta's and United's domestic 1st / 2nd checked-bag fees?", opts:["$45 / $55","$35 / $45","$30 / $40","$50 / $60"], a:0},
+  {m:"Airlines", q:"American Airlines is unique among US carriers in that it…", opts:["Charges Basic Economy MORE for checked bags than Main Cabin","Has no bag fees at all","Gives everyone 3 free bags","Bans carry-ons"], a:0},
+  {m:"Airlines", q:"Which statement about Southwest in 2026 is correct?", opts:["Bags now cost money and seating is assigned","Bags still fly free and seating is open","It flies internationally with free bags","It merged with Spirit"], a:0},
+  {m:"Airlines", q:"On Delta, an in-cabin pet is NOT permitted in which seats?", opts:["Delta One / Premium Select / bulkhead / exit row","Main Cabin","Comfort+","Any window seat"], a:0},
+  {m:"Airlines", q:"Alaska's unaccompanied-minor fee is…", opts:["$50 nonstop / $75 connecting, each way","$150 flat","Free","$300 round trip"], a:0},
+  {m:"Airlines", q:"On JetBlue, a no-showed ticket…", opts:["Stays open and is valid for one year from issue","Is refunded automatically","Is worthless immediately","Becomes free"], a:0},
+
+  {m:"Process", q:"Put the booking lifecycle in order:", opts:["Lead in → find fare → quote → book in Amadeus → verify payment → issue ticket → support","Issue ticket → quote → verify → book","Verify → support → quote → book","Book → support → quote → issue"], a:0},
+  {m:"Process", q:"Why note which market site (US/CA/UK/ES) a lead came from?", opts:["It sets the currency and the right phone line for that customer","It changes the aircraft","It picks the seat","It has no effect"], a:0},
+  {m:"Process", q:"A fare is quoted but not yet ticketed. It is…", opts:["Not secured — it can still be lost until ticketing","Fully guaranteed forever","Already refunded","Cancelled"], a:0},
+  {m:"Process", q:"What is our commitment after a trip is booked and verified?", opts:["24/7 support, check-in help and changes via MyBooking","No further contact","An automatic refund","A survey only"], a:0},
+
+  {m:"IATA", q:"A passenger booked to \"Charleston\" is going to West Virginia. Which code?", opts:["CRW","CHS","CLT","CAE"], a:0},
+  {m:"IATA", q:"Which pair are BOTH airports in the SAME metro area?", opts:["DCA and IAD (Washington)","SJC and SJO","BHM and BHX","NAP and APF"], a:0},
+
+  {m:"Leave", q:"To choose your own week-off day, how much notice is needed?", opts:["At least one week","One day","No notice","One month"], a:0},
+  {m:"Leave", q:"Which of these costs you a day's pay?", opts:["UL — unplanned leave","An approved CL","An approved week-off","A public holiday"], a:0},
+
+  {m:"Verification", q:"For card-paid travel within 30 days, your strongest protection is…", opts:["A written \"I approve\" email from the cardholder","A verbal yes on the call","A screenshot of the card","Nothing extra"], a:0},
+  {m:"Verification", q:"You spot a red flag on a large booking. The right move is to…", opts:["Slow down and escalate","Push it through faster because it's big","Ignore it","Cancel it without telling anyone"], a:0},
+
+  {m:"Amadeus", q:"You made changes but want to discard them entirely. Which entry?", opts:["IG (Ignore)","ET","RT","NM"], a:0},
+  {m:"Amadeus", q:"Your work in a PNR is only saved once you…", opts:["End the transaction (ER / ET)","Close the browser","Type RT","Wait five minutes"], a:0},
 ];
 const EXAM_N = 100;       // questions per attempt
-const EXAM_PASS = 85;     // percent to pass
+const EXAM_PASS = 90;     // percent to pass
 let exam = {qs:[], i:0, answers:[]};
 
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
@@ -3721,13 +3766,13 @@ function viewCert(){
 const CALL = {
   start:{ cust:"Hi, I found a fare to London on your site that's way cheaper than the airline. Honestly, it looks too good to be true — are you even a real company?",
     choices:[
-      {t:"Completely fair to ask. We're IATA-certified and BBB-accredited, listed on Kayak and Momondo, with reviews on Trustpilot you can read right now.", q:"good", to:"price", fb:"Proof they can verify themselves — exactly right."},
+      {t:"Completely fair to ask. We're IATA-certified and accredited by the Better Business Bureau, listed on Kayak and Momondo, with reviews on Trustpilot you can read right now.", q:"good", to:"price", fb:"Proof they can verify themselves — exactly right."},
       {t:"Of course we're real, everyone knows us.", q:"poor", to:"skeptic", fb:"Vague and a little dismissive — they wanted real reassurance."},
       {t:"Yes. So, do you want the fare or not?", q:"poor", to:"skeptic", fb:"Too pushy this early — it raises their guard."},
     ]},
   skeptic:{ cust:"That didn't really answer me. I'm not comfortable yet.",
     choices:[
-      {t:"Understood — let me be concrete. We're IATA-certified and BBB-accredited, and you can read our Trustpilot and BBB reviews right now.", q:"good", to:"price", fb:"Good recovery with verifiable proof."},
+      {t:"Understood — let me be concrete. We're IATA-certified and accredited by the Better Business Bureau, and you can read our Trustpilot and Better Business Bureau reviews right now.", q:"good", to:"price", fb:"Good recovery with verifiable proof."},
       {t:"Look, it's a great deal — you should just trust me.", q:"poor", to:"end_bad", fb:"'Just trust me' is the opposite of proof. They're gone."},
     ]},
   price:{ cust:"Okay, that's reassuring. But why is it so much cheaper than the airline's own website?",
@@ -3901,7 +3946,7 @@ function renderAdmin(rows){
    MODULE CHECKPOINTS — must pass to complete a module
    ============================================================ */
 const MODULE_TAG = {company:"Company", leaves:"Leave", iata:"IATA", amadeus:"Amadeus", process:"Process", sales:"Sales", verify:"Verification", airlines:"Airlines"};
-const GATE_N = 6, GATE_PASS = 80;
+const GATE_N = 10, GATE_PASS = 90;
 function allModulesDone(){ return MODULES.every(m=>progress[m.id]>=100); }
 function nextModuleId(mid){ const i=MODULES.findIndex(m=>m.id===mid); return (i>=0&&i<MODULES.length-1)?MODULES[i+1].id:null; }
 function moduleGateHTML(mid){ return `<h3 class="sec">Module checkpoint</h3><div id="gateBox" class="ex-box"></div>`; }
@@ -3944,7 +3989,7 @@ function gateFinish(){
 /* ============================================================
    IATA AIRPORT TEST — 100 questions: pronounce + locate
    ============================================================ */
-const IAX_N = 100, IAX_PASS = 80;
+const IAX_N = 100, IAX_PASS = 85;
 let iax=null;
 function jsq(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function iaxAirports(){ const out=[]; Object.keys(IATA).forEach(rk=>{ (IATA[rk]||[]).forEach(a=>{ if(a.st && a.say && a.c) out.push(Object.assign({rk},a)); }); }); return out; }
