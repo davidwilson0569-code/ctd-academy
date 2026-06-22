@@ -786,6 +786,35 @@
   .air-v{color:#33414f}
   .air-note{font-size:13.5px;color:#33414f;line-height:1.55}
   @media(max-width:560px){.air-row{grid-template-columns:1fr;gap:2px}.air-k{color:#1c2b3d}}
+  /* sales playbook */
+  .pb-list{margin:0 0 16px;padding-left:20px;display:grid;gap:11px}
+  .pb-list li{font-size:13.8px;line-height:1.55;color:#33414f}
+  .pb-mini{margin-top:7px;font-family:var(--mono);font-size:11.5px;color:#5a6b7b;background:#f3f6fa;border:1px solid var(--line);border-radius:8px;padding:8px 11px;line-height:1.7}
+  .pb-warn-inline{display:block;margin-top:8px;font-size:12.5px;color:#8a5b00;background:rgba(240,165,0,.09);border-radius:8px;padding:8px 11px;line-height:1.5}
+  .sx{background:#0E1B2C;color:#e8eef5;border-radius:11px;padding:14px 16px;margin:6px 0 18px;font-size:14px;line-height:1.6;border-left:3px solid var(--amber)}
+  .sx-h{font-family:var(--mono);font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--amber);margin-bottom:7px}
+  .pb-two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:4px 0 14px}
+  .pb-col{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 16px}
+  .pb-col h4{font-family:var(--disp);font-size:14.5px;margin-bottom:7px;color:#1c2b3d}
+  .pb-col p{font-size:13px;line-height:1.55;color:#41505f}
+  @media(max-width:560px){.pb-two{grid-template-columns:1fr}}
+  /* look-alike airports */
+  .cf-wrap{margin:22px 0 6px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+  .cf-summary{cursor:pointer;padding:15px 18px;font-family:var(--disp);font-weight:600;font-size:15px;color:var(--navy);list-style:none;background:rgba(240,165,0,.06)}
+  .cf-summary::-webkit-details-marker{display:none}
+  .cf-summary::after{content:"▸";float:right;color:var(--amber);transition:.2s}
+  .cf-wrap[open] .cf-summary::after{transform:rotate(90deg)}
+  .cf-body{padding:6px 18px 18px}
+  .cf-intro{font-size:13px;color:var(--muted);line-height:1.55;margin:10px 0 14px}
+  .cf-h{font-family:var(--disp);font-size:13.5px;margin:18px 0 4px;color:#1c2b3d}
+  .cf-h.danger{color:#b3461f}
+  .cf-sub{font-size:12px;color:var(--muted);margin:0 0 11px}
+  .cf-item{display:grid;grid-template-columns:160px 1fr;gap:14px;padding:9px 0;border-top:1px solid #eef2f6;font-size:13.5px}
+  .cf-city{font-weight:600;color:#1c2b3d}
+  .cf-codes{display:flex;flex-wrap:wrap;gap:7px}
+  .cf-code{background:#f3f6fa;border:1px solid var(--line);border-radius:7px;padding:3px 9px;font-size:12.5px;color:#41505f}
+  .cf-code b{font-family:var(--mono);color:var(--navy);letter-spacing:.5px}
+  @media(max-width:560px){.cf-item{grid-template-columns:1fr;gap:5px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2132,6 +2161,10 @@ const SALES_BEATS = [
   {sel:".sa-view .flip-grid", tab:"learn", chapter:"FOUR PRINCIPLES", action:saFlipPrinciples, dur:10000, cap:"Keep four principles in mind: listen first, sell on value not just price, acknowledge before you answer, and assume the close."},
   {sel:"#objSim", tab:"practice", chapter:"HANDLING OBJECTIONS", dur:9000, cap:"This is where calls are won or lost. When a customer pushes back, acknowledge first, then answer with facts. Practise it right here — pick a reply and see which lands best."},
   {sel:".sc-wrap", tab:"reference", chapter:"APPROVED SCRIPTS", dur:9000, cap:"And here's your script library — the real questions customers ask, with our approved answers. Filter by topic, search it, and learn the meaning so you can make it sound like you."},
+  {sel:"#pbFind", tab:"playbook", chapter:"PLAYBOOK · FIND THE BEST OPTION", dur:14000, cap:"When the easy fare is sold out or would lose us money, work the alternatives before giving up. Check nearby airports at both ends, ask if their dates are flexible, and check the low-cost carriers — just compare the all-in price. Never use hidden-city ticketing; it breaks airline rules and can cost the agency."},
+  {sel:"#pbTime", tab:"playbook", chapter:"PLAYBOOK · KEEP IT TIGHT", dur:9000, cap:"Aim to close within twenty to twenty-five minutes. Quote fast, offer two or three options instead of ten, set expectations while you research, then ask for the booking."},
+  {sel:"#pbRefund", tab:"playbook", chapter:"PLAYBOOK · REFUNDABLE VS INSURANCE", dur:13000, cap:"Know the difference. A refundable fare lets the customer cancel the ticket itself for a refund, under the airline's rules. Travel insurance is a separate policy that pays out for covered reasons. Pitch the refundable fare honestly — never promise a credit the fare doesn't actually give."},
+  {sel:"#pbMatch", tab:"playbook", chapter:"PLAYBOOK · PRICE MATCH", dur:12000, cap:"We match a genuine like-for-like price within twenty-four hours. If a customer quotes a cheaper price elsewhere, check it's the same flights and conditions, and gently suggest they confirm it's really bookable — some sites show a teaser price that jumps once you call."},
 ];
 const AM_BEATS = [
   {sel:".lesson-tabs", tab:"learn", chapter:"AMADEUS · OVERVIEW", dur:9000, cap:"Amadeus is the system we use to find flights and make bookings. Don't be intimidated — we start from zero and learn it one small step at a time."},
@@ -2833,6 +2866,7 @@ function viewSales(){return `
     <button class="subtab active" data-subtab="learn">Learn</button>
     <button class="subtab" data-subtab="practice">Practise</button>
     <button class="subtab" data-subtab="reference">Scripts</button>
+    <button class="subtab" data-subtab="playbook">Playbook</button>
   </div>
 
   <!-- LEARN -->
@@ -2877,6 +2911,58 @@ function viewSales(){return `
       <div id="scList"></div>
     </div>
     <div class="placeholder" style="margin-top:18px"><b>Note for trainers →</b> These are the approved customer scripts, polished for clarity — for new hires to learn and deliver naturally, not read robotically. Tell me if any wording needs to change.</div>
+  </div>
+
+  <!-- PLAYBOOK -->
+  <div class="ampanel" id="saPlaybook" style="display:none">
+    <h3 class="sec" id="pbFind" style="margin-top:0">Find the best option <span style="font-size:12.5px;color:var(--muted);font-family:var(--body);font-weight:400">— when the easy fare won't work</span></h3>
+    <div class="note"><span>💡</span><div><b>Why this matters.</b> Sometimes the obvious fare is sold out at the departure or destination airport, or the only seat left would lose us money. Before you give up the sale — or eat the loss — work the alternatives. A few extra checks often save the booking and protect our margin.</div></div>
+    <ol class="pb-list">
+      <li><b>Nearby / alternate airports.</b> Check airports near <i>both</i> the departure and the destination city — many cities have more than one:
+        <div class="pb-mini">New York: JFK · LGA · EWR &nbsp;|&nbsp; Washington: DCA · IAD · BWI &nbsp;|&nbsp; Chicago: ORD · MDW &nbsp;|&nbsp; LA area: LAX · BUR · SNA · LGB · ONT &nbsp;|&nbsp; SF Bay: SFO · OAK · SJC &nbsp;|&nbsp; Houston: IAH · HOU &nbsp;|&nbsp; Dallas: DFW · DAL &nbsp;|&nbsp; S. Florida: MIA · FLL · PBI</div></li>
+      <li><b>Flexible dates.</b> Ask if they can move a day or two. Midweek (Tue/Wed) and red-eye flights are usually cheaper, and a 1–3 day shift often unlocks a much better fare.</li>
+      <li><b>Low-cost carriers.</b> On the right route an ultra-low-cost airline can beat everything in the GDS. Worth a check:
+        <div class="pb-mini">Frontier (F9) · Allegiant (G4) · Breeze (MX) · Avelo (XP) · Sun Country (SY) · Volaris (Y4, Mexico) · Viva Aerobus (VB, Mexico) · Flair (F8, Canada)</div>
+        <span class="pb-warn-inline">Heads-up: most ULCCs have little or no content in Amadeus, so check the carrier's own site for real availability — and compare the <i>all-in</i> price, since their headline fare excludes bags and seats. Note: Spirit (NK) ceased operations in May 2026 — do not try to book it.</span></li>
+    </ol>
+    <div class="sx"><div class="sx-h">Try saying</div>"Let me check a couple of options for you — there are a few airports near you, and if your dates are even a little flexible I can usually find a better fare. Give me about two minutes."</div>
+    <div class="pitfall"><h4>⚠️ Hidden-city ticketing — know the risk, don't sell it</h4><ul>
+      <li><b>What it is:</b> booking a connecting ticket and getting off at the layover city because that fare is cheaper than the direct one.</li>
+      <li><b>Why we don't coach it:</b> it breaks almost every airline's contract of carriage. The airline can <b>cancel the rest of the itinerary (including the return), confiscate miles, and bill the agency a debit memo (ADM)</b> — and repeated abuse can put our IATA accreditation at risk.</li>
+      <li><b>What to do:</b> never advise a customer to do it, and don't book it without sign-off from a senior per CTD policy. Use nearby airports and flexible dates instead — same goal, none of the risk.</li>
+    </ul></div>
+
+    <h3 class="sec" id="pbTime">Keep the call tight — aim for 20–25 minutes</h3>
+    <div class="note"><span>⏱️</span><div><b>Why this matters.</b> A focused call is better for the customer and for us — long calls tie up the line, tire the customer out, and convert worse. Aim to close within <b>20–25 minutes</b>.</div></div>
+    <ul class="pb-list">
+      <li><b>Quote fast.</b> Get a price in front of them within the first minute or two.</li>
+      <li><b>Offer 2–3 options, not ten.</b> Too many choices stall the decision.</li>
+      <li><b>Set expectations while you research.</b> "Give me two minutes to check nearby airports" keeps them comfortable.</li>
+      <li><b>Ask for the booking.</b> Once they like an option, move to the close — don't keep re-opening the search.</li>
+    </ul>
+
+    <h3 class="sec" id="pbRefund">Refundable fare vs. travel insurance</h3>
+    <p style="font-size:13.5px;color:var(--muted);margin:0 0 12px">Customers mix these up constantly. Know the real difference — and explain it honestly.</p>
+    <div class="pb-two">
+      <div class="pb-col"><h4>✈️ Refundable fare</h4><p>A pricier ticket where the <b>airline's own fare rules</b> let you cancel for a refund to the original payment. The flexibility is built into the ticket itself — good for travellers whose plans may change.</p></div>
+      <div class="pb-col"><h4>🛡️ Travel insurance</h4><p>A <b>separate third-party policy</b> that reimburses you for <i>covered</i> reasons (illness, emergencies) within its terms. It does <b>not</b> make the ticket refundable, and it pays out per the policy — not automatically.</p></div>
+    </div>
+    <div class="sx"><div class="sx-h">Pitching a refundable fare — honestly</div>"For about [X] more I can put you on a fully refundable fare, so if your plans change you can cancel and get your money back under the airline's rules. If you'd rather keep it lower, the standard fare is fine — it's just non-refundable. Which would you prefer?"</div>
+    <div class="pitfall"><h4>⚠️ Never misrepresent what a ticket includes</h4><ul>
+      <li>Don't tell a customer they'll get a refund or "travel credit" the fare rules don't actually provide. Quote the <b>real</b> rule.</li>
+      <li>Misrepresentation is exactly what triggers <b>chargebacks, DOT complaints and lost trust</b> — it costs far more than the sale. The honest pitch above closes well <i>and</i> protects you and CTD.</li>
+    </ul></div>
+
+    <h3 class="sec" id="pbMatch">Price-match guarantee &amp; bait-and-switch</h3>
+    <div class="note"><span>💲</span><div><b>What we offer.</b> CTD price-matches a genuine <b>like-for-like</b> quote within a <b>24-hour</b> window — same airline, same flights, same cabin, and the same fare conditions (bags, changes, refundability).</div></div>
+    <p style="font-size:13.5px;color:var(--muted);margin:0 0 10px">Sometimes a customer sees a lower price elsewhere that isn't really bookable — a teaser ("bait-and-switch") that jumps once they call. Handle it fairly:</p>
+    <ul class="pb-list">
+      <li><b>Stay calm and welcome it.</b> Thank them for the chance to match.</li>
+      <li><b>Check it's apples-to-apples.</b> Same flights, cabin, baggage and refund rules — not a stripped basic fare next to our flexible one.</li>
+      <li><b>Educate gently.</b> Suggest they confirm the other price is actually bookable — some sites show a low number then raise it on the call.</li>
+      <li><b>Match what's real.</b> If it's a genuine like-for-like fare inside the 24-hour window, honour the match.</li>
+    </ul>
+    <div class="sx"><div class="sx-h">Try saying</div>"Happy to look at that for you — we match a like-for-like price within 24 hours. One tip: it's worth confirming that price is actually bookable, because some sites show a low teaser and then raise it when you call. If it's the same flights and conditions, I'll match it."</div>
   </div>
 
   ${presenterMarkup()}
@@ -3158,6 +3244,7 @@ function viewIata(){
   </div>
 
   <div class="iata-grid" id="iataGrid" style="margin-top:16px"></div>
+  ${confusableHTML()}
   ${presenterMarkup()}
   ${moduleGateHTML('iata')}`;
 }
@@ -3435,6 +3522,15 @@ const EXAM_POOL = [
   {m:"Airlines", q:"An in-cabin pet must…", opts:["Stay inside its carrier under the seat at all times","Sit on the passenger's lap","Travel in the overhead bin","Be walked during the flight"], a:0},
   {m:"Airlines", q:"A checked bag weighs 60 lb. It is…", opts:["Overweight (51–70 lb) — an extra fee applies on top of the bag fee","Free","Refused at all airlines","Oversized"], a:0},
   {m:"Airlines", q:"Southwest unaccompanied minors and in-cabin pets are limited to…", opts:["Nonstop/direct, Southwest-operated US flights only","Any flight including international","Connecting flights only","Codeshare partners"], a:0},
+
+  {m:"Sales", q:"The fare at the customer's airport is sold out. Best first move?", opts:["Check nearby airports and flexible dates","Tell them it's impossible","Quote a much higher fare","End the call"], a:0},
+  {m:"Sales", q:"How long should a sales call ideally take to convert?", opts:["About 20–25 minutes","Over an hour","5 minutes flat","As long as possible"], a:0},
+  {m:"Sales", q:"Which actually makes the TICKET itself refundable?", opts:["A refundable fare","Travel insurance","A loyalty card","A carry-on bag"], a:0},
+  {m:"Sales", q:"Hidden-city ticketing is…", opts:["Against most airlines' contracts — don't advise it or book it without senior approval","A great everyday tactic","Required on every booking","The same as a refundable fare"], a:0},
+  {m:"Sales", q:"A customer cites a cheaper price elsewhere. You should…", opts:["Check it's like-for-like and match within 24 hours, noting some teaser prices rise on the call","Immediately undercut by any amount","Refuse to discuss it","Tell them to book elsewhere"], a:0},
+
+  {m:"IATA", q:"A customer says they're flying to \"Portland.\" What must you confirm?", opts:["Oregon (PDX) or Maine (PWM)","Nothing — there's only one","The airline only","Their seat"], a:0},
+  {m:"IATA", q:"For \"San Jose,\" SJO is which airport?", opts:["San José, Costa Rica","San Jose, California","San Juan","Santiago"], a:0},
 ];
 const EXAM_N = 100;       // questions per attempt
 const EXAM_PASS = 85;     // percent to pass
@@ -3982,6 +4078,55 @@ function moduleGoalsHTML(id){
 const VIEWS_GOALS_MARKER = true;
 
 /* ============================================================
+   LOOK-ALIKE AIRPORTS — same/similar names, different codes
+   ============================================================ */
+const CONFUSE_DIFF = [
+  {city:"Portland", items:[["PDX","Portland, Oregon"],["PWM","Portland, Maine"]]},
+  {city:"Charleston", items:[["CHS","Charleston, South Carolina"],["CRW","Charleston, West Virginia"]]},
+  {city:"San Jose", items:[["SJC","San Jose, California"],["SJO","San Jose, Costa Rica"]]},
+  {city:"Birmingham", items:[["BHM","Birmingham, Alabama"],["BHX","Birmingham, UK"]]},
+  {city:"Manchester", items:[["MHT","Manchester, New Hampshire"],["MAN","Manchester, UK"]]},
+  {city:"Naples", items:[["APF","Naples, Florida"],["NAP","Naples, Italy"]]},
+  {city:"Athens", items:[["AHN","Athens, Georgia"],["ATH","Athens, Greece"]]},
+  {city:"Valencia", items:[["VLC","Valencia, Spain"],["VLN","Valencia, Venezuela"]]},
+  {city:"Columbus", items:[["CMH","Columbus, Ohio"],["CSG","Columbus, Georgia"],["GTR","Columbus, Mississippi"]]},
+  {city:"Santiago", items:[["SCL","Santiago, Chile"],["STI","Santiago, Dominican Rep."],["SCU","Santiago de Cuba"]]},
+  {city:"London", items:[["LHR","London, UK (Heathrow)"],["YXU","London, Ontario, Canada"]]},
+  {city:"San Pedro Sula vs San Pedro", items:[["SAP","San Pedro Sula, Honduras"],["SPD","Saidpur — NOT San Pedro"]]}
+];
+const CONFUSE_METRO = [
+  {city:"New York", items:[["JFK","Kennedy"],["LGA","LaGuardia"],["EWR","Newark"]]},
+  {city:"Washington DC", items:[["DCA","Reagan National"],["IAD","Dulles"],["BWI","Baltimore"]]},
+  {city:"Chicago", items:[["ORD","O'Hare"],["MDW","Midway"]]},
+  {city:"Los Angeles area", items:[["LAX","Los Angeles"],["BUR","Burbank"],["SNA","Orange County"],["LGB","Long Beach"],["ONT","Ontario"]]},
+  {city:"San Francisco Bay", items:[["SFO","San Francisco"],["OAK","Oakland"],["SJC","San Jose"]]},
+  {city:"Houston", items:[["IAH","Bush Intercontinental"],["HOU","Hobby"]]},
+  {city:"Dallas", items:[["DFW","DFW Intl"],["DAL","Love Field"]]},
+  {city:"South Florida", items:[["MIA","Miami"],["FLL","Fort Lauderdale"],["PBI","West Palm Beach"]]},
+  {city:"London (UK)", items:[["LHR","Heathrow"],["LGW","Gatwick"],["STN","Stansted"],["LTN","Luton"],["LCY","City"]]},
+  {city:"Paris", items:[["CDG","Charles de Gaulle"],["ORY","Orly"],["BVA","Beauvais"]]},
+  {city:"Tokyo", items:[["NRT","Narita"],["HND","Haneda"]]},
+  {city:"Toronto", items:[["YYZ","Pearson"],["YTZ","Billy Bishop / City"]]},
+  {city:"Sao Paulo", items:[["GRU","Guarulhos"],["CGH","Congonhas"],["VCP","Viracopos / Campinas"]]},
+  {city:"Buenos Aires", items:[["EZE","Ezeiza (intl)"],["AEP","Aeroparque (domestic)"]]}
+];
+function cfBlock(row){
+  return `<div class="cf-item"><div class="cf-city">${escHtml(row.city)}</div><div class="cf-codes">${row.items.map(it=>`<span class="cf-code"><b>${it[0]}</b> ${escHtml(it[1])}</span>`).join('')}</div></div>`;
+}
+function confusableHTML(){
+  return `<details class="cf-wrap"><summary class="cf-summary">🔀 Look-alike airports — don't mix these up</summary>
+    <div class="cf-body">
+      <p class="cf-intro">Two kinds of mix-ups send bags and passengers to the wrong place. Read the city out loud with the customer and confirm the <b>code</b> before you book.</p>
+      <h4 class="cf-h danger">⚠️ Same name, completely different place</h4>
+      <p class="cf-sub">The most dangerous — book the wrong one and the passenger lands in the wrong city (or country).</p>
+      ${CONFUSE_DIFF.map(cfBlock).join('')}
+      <h4 class="cf-h">🏙️ One city, several airports</h4>
+      <p class="cf-sub">Same metro area — always confirm <i>which</i> airport the customer means.</p>
+      ${CONFUSE_METRO.map(cfBlock).join('')}
+    </div></details>`;
+}
+
+/* ============================================================
    MODULE 08 — AIRLINE POLICIES (8 carriers)
    Bag fees verified vs. official airline sites, June 2026.
    ============================================================ */
@@ -4444,7 +4589,7 @@ function sayIt(btn, expected){
    ============================================================ */
 let lessonIdx = 0;
 function setSubTab(prefix, name, fromPresenter){
-  ['learn','practice','reference'].forEach(t=>{
+  ['learn','practice','reference','playbook'].forEach(t=>{
     const panel=document.getElementById(prefix + t.charAt(0).toUpperCase()+t.slice(1));
     if(panel) panel.style.display = (t===name)?'block':'none';
   });
