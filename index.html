@@ -815,6 +815,18 @@
   .cf-code{background:#f3f6fa;border:1px solid var(--line);border-radius:7px;padding:3px 9px;font-size:12.5px;color:#41505f}
   .cf-code b{font-family:var(--mono);color:var(--navy);letter-spacing:.5px}
   @media(max-width:560px){.cf-item{grid-template-columns:1fr;gap:5px}}
+  /* highlight the Playbook */
+  .pb-promo{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#fff6e3,#fffdf8);border:1px solid rgba(240,165,0,.5);border-left:4px solid var(--amber);border-radius:13px;padding:14px 16px;margin:0 0 14px;cursor:pointer;transition:.15s;box-shadow:0 2px 10px rgba(240,165,0,.14)}
+  .pb-promo:hover{box-shadow:0 6px 18px rgba(240,165,0,.24);transform:translateY(-1px)}
+  .pb-promo-ico{font-size:26px;flex-shrink:0}
+  .pb-promo-txt{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0}
+  .pb-promo-txt b{font-family:var(--disp);font-size:15px;color:var(--navy)}
+  .pb-promo-txt span{font-size:12.5px;color:#7a6224;line-height:1.45}
+  .pb-promo-go{font-weight:700;color:#8a5b00;font-size:13px;white-space:nowrap}
+  .subtab.hot{border-color:var(--amber);color:#8a5b00;background:rgba(240,165,0,.13);font-weight:700}
+  .subtab.hot:hover{background:rgba(240,165,0,.22)}
+  .subtab.hot.active{background:var(--amber);color:#0E1B2C;border-color:var(--amber)}
+  @media(max-width:560px){.pb-promo-go{display:none}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -2862,11 +2874,17 @@ function viewSales(){return `
     </div>
   </div>
 
+  <div class="pb-promo" onclick="setSubTab('sa','playbook')">
+    <div class="pb-promo-ico">⭐</div>
+    <div class="pb-promo-txt"><b>Sales Playbook — our most important real-world tactics</b><span>Alternate airports &amp; low-cost fares · keeping calls to 20–25 min · refundable fares vs insurance · the price-match guarantee.</span></div>
+    <div class="pb-promo-go">Open →</div>
+  </div>
+
   <div class="subtabs" id="saSubtabs">
     <button class="subtab active" data-subtab="learn">Learn</button>
+    <button class="subtab hot" data-subtab="playbook">★ Playbook</button>
     <button class="subtab" data-subtab="practice">Practise</button>
     <button class="subtab" data-subtab="reference">Scripts</button>
-    <button class="subtab" data-subtab="playbook">Playbook</button>
   </div>
 
   <!-- LEARN -->
@@ -3235,6 +3253,12 @@ function viewIata(){
   </div>
 
   <div class="note"><span>🎤</span><div><b>Mic tip.</b> Playback uses a clear male US voice. For the most natural-sounding voice, open this in <b>Microsoft Edge</b>; Chrome also works well. The <b>Say it</b> speech test needs <b>Chrome or Edge</b> and microphone permission, and works most reliably when the page is opened directly (not inside a preview frame).</div></div>
+
+  <div class="pb-promo" onclick="openLookAlike()">
+    <div class="pb-promo-ico">🔀</div>
+    <div class="pb-promo-txt"><b>Look-alike airports — don't send a passenger to the wrong city</b><span>Portland OR vs ME · San Jose CA vs Costa Rica · Birmingham AL vs UK · plus multi-airport cities like NYC, DC and London.</span></div>
+    <div class="pb-promo-go">Open →</div>
+  </div>
 
   <div class="iata-controls">
     <div class="search"><span class="ico">🔍</span><input id="iataSearch" placeholder="Search code or city — e.g. YYZ, Toronto, London"></div>
@@ -4113,8 +4137,12 @@ const CONFUSE_METRO = [
 function cfBlock(row){
   return `<div class="cf-item"><div class="cf-city">${escHtml(row.city)}</div><div class="cf-codes">${row.items.map(it=>`<span class="cf-code"><b>${it[0]}</b> ${escHtml(it[1])}</span>`).join('')}</div></div>`;
 }
+function openLookAlike(){
+  const d=document.getElementById('lookAlike');
+  if(d){ d.open=true; d.scrollIntoView({behavior:'smooth', block:'start'}); }
+}
 function confusableHTML(){
-  return `<details class="cf-wrap"><summary class="cf-summary">🔀 Look-alike airports — don't mix these up</summary>
+  return `<details class="cf-wrap" id="lookAlike"><summary class="cf-summary">🔀 Look-alike airports — don't mix these up</summary>
     <div class="cf-body">
       <p class="cf-intro">Two kinds of mix-ups send bags and passengers to the wrong place. Read the city out loud with the customer and confirm the <b>code</b> before you book.</p>
       <h4 class="cf-h danger">⚠️ Same name, completely different place</h4>
