@@ -17,14 +17,16 @@
     --go:#2FB37E;          /* runway clear */
     --go-soft:#3FC78F;
     --warn:#E8693D;        /* attention */
-    --paper:#EEF2F6;       /* light slate bg */
+    --paper:#F3F6FA;       /* light slate bg */
     --card:#FFFFFF;
     --line:#D8E0E9;
     --ink:#0E1B2C;
     --muted:#5C6B7E;
     --muted-2:#8895A6;
     --radius:14px;
-    --shadow:0 1px 2px rgba(14,27,44,.06), 0 8px 24px rgba(14,27,44,.06);
+    --shadow:0 1px 2px rgba(14,27,44,.04), 0 5px 14px rgba(14,27,44,.05);
+    --shadow-lg:0 4px 10px rgba(14,27,44,.06), 0 22px 50px rgba(14,27,44,.13);
+    --radius-lg:18px;
     --mono:'IBM Plex Mono', ui-monospace, monospace;
     --disp:'Space Grotesk', system-ui, sans-serif;
     --body:'Inter', system-ui, sans-serif;
@@ -32,15 +34,19 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{
-    font-family:var(--body);background:var(--paper);color:var(--ink);
+    font-family:var(--body);color:var(--ink);
+    background:radial-gradient(1100px 460px at 100% -8%, rgba(240,165,0,.06), transparent 62%), var(--paper);
     -webkit-font-smoothing:antialiased;line-height:1.55;
   }
+  ::-webkit-scrollbar{width:11px;height:11px}
+  ::-webkit-scrollbar-thumb{background:#c4d0dd;border-radius:8px;border:3px solid transparent;background-clip:content-box}
+  ::-webkit-scrollbar-thumb:hover{background:#a9b8c8;background-clip:content-box}
   .app{display:grid;grid-template-columns:264px 1fr;min-height:100vh}
 
   /* ---------- Sidebar ---------- */
   .side{
-    background:var(--navy);color:#cdd8e6;display:flex;flex-direction:column;
-    position:sticky;top:0;height:100vh;
+    background:linear-gradient(177deg,#101f33 0%, #0a1525 100%);color:#cdd8e6;display:flex;flex-direction:column;
+    position:sticky;top:0;height:100vh;box-shadow:inset -1px 0 0 rgba(255,255,255,.05);
   }
   .brand{padding:22px 22px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.08)}
   .brand .mark{
@@ -69,55 +75,66 @@
   /* ---------- Main ---------- */
   .main{min-width:0}
   .topbar{
-    background:var(--card);border-bottom:1px solid var(--line);padding:14px 34px;
+    background:rgba(255,255,255,.82);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line);padding:15px 34px;
     display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;
   }
   .crumb{font-size:12.5px;color:var(--muted)}
   .crumb b{color:var(--ink)}
   .topbar-right{display:flex;align-items:center;gap:14px}
-  .pill{font-size:12px;background:var(--paper);border:1px solid var(--line);padding:5px 11px;border-radius:20px;color:var(--muted)}
+  .pill{font-size:12px;font-weight:600;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.28);padding:5px 12px;border-radius:20px;color:#8a5b00}
   .avatar{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600}
   .content{padding:34px;max-width:1080px}
   .view{display:none}
   .view.active{display:block;animation:fade .25s ease}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-  h2.page-title{font-family:var(--disp);font-size:27px;font-weight:600;letter-spacing:-.3px;margin-bottom:5px}
+  h2.page-title{font-family:var(--disp);font-size:30px;font-weight:600;letter-spacing:-.5px;margin-bottom:6px;line-height:1.08}
   .page-sub{color:var(--muted);font-size:14.5px;margin-bottom:26px;max-width:620px}
   h3.sec{font-family:var(--disp);font-size:15px;font-weight:600;letter-spacing:.2px;color:#1c2b3d;margin:40px 0 16px;display:flex;align-items:center;gap:10px}
   h3.sec::before{content:"";width:18px;height:2px;background:var(--amber);border-radius:2px;flex:none}
 
   /* dashboard */
   .hero{
-    background:var(--navy);border-radius:18px;padding:30px 32px;color:#fff;position:relative;overflow:hidden;margin-bottom:26px;
+    background:linear-gradient(135deg,#14263d 0%, #0E1B2C 58%);border-radius:var(--radius-lg);padding:34px 34px;color:#fff;position:relative;overflow:hidden;margin-bottom:26px;
+    box-shadow:0 18px 44px rgba(14,27,44,.28);border-top:1px solid rgba(240,165,0,.25);
   }
-  .hero::after{content:"";position:absolute;right:-40px;top:-40px;width:240px;height:240px;
-    background:radial-gradient(circle,rgba(240,165,0,.18),transparent 70%)}
+  .hero::before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 22px);pointer-events:none}
+  .hero::after{content:"";position:absolute;right:-50px;top:-50px;width:280px;height:280px;
+    background:radial-gradient(circle,rgba(240,165,0,.16),transparent 70%)}
+  .hero > *{position:relative}
   .hero .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--amber);text-transform:uppercase}
-  .hero h2{font-family:var(--disp);font-size:30px;font-weight:600;margin:8px 0 8px;letter-spacing:-.4px}
+  .hero h2{font-family:var(--disp);font-size:33px;font-weight:600;margin:10px 0 9px;letter-spacing:-.6px;line-height:1.1;max-width:640px}
   .hero p{color:#aebccd;font-size:14.5px;max-width:520px}
   .hero-stats{display:flex;gap:30px;margin-top:22px;flex-wrap:wrap}
   .hero-stat .n{font-family:var(--mono);font-size:24px;color:var(--amber);font-weight:600}
   .hero-stat .l{font-size:11.5px;color:#8fa0b3;letter-spacing:.4px;text-transform:uppercase}
+  .hero-ring{position:absolute;top:30px;right:34px;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;text-align:center;
+    background:conic-gradient(var(--amber) calc(var(--p,0)*1%), rgba(255,255,255,.12) 0);}
+  .hero-ring::before{content:"";position:absolute;inset:7px;border-radius:50%;background:#0E1B2C}
+  .hero-ring span{position:relative;font-family:var(--disp);font-weight:600;font-size:20px;color:#fff;line-height:1}
+  .hero-ring small{position:relative;display:block;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#8fa0b3;margin-top:2px}
+  @media(max-width:640px){.hero-ring{display:none}}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
   .mcard{
-    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;cursor:pointer;
-    transition:.18s;box-shadow:var(--shadow);position:relative;overflow:hidden;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:21px;cursor:pointer;
+    transition:transform .2s cubic-bezier(.2,.7,.3,1), box-shadow .2s, border-color .2s;box-shadow:var(--shadow);position:relative;overflow:hidden;
   }
-  .mcard:hover{transform:translateY(-3px);border-color:#b9c6d6}
+  .mcard::before{content:"";position:absolute;left:0;top:0;height:3px;width:100%;background:linear-gradient(90deg,var(--amber),var(--amber-soft));transform:scaleX(0);transform-origin:left;transition:transform .25s}
+  .mcard:hover{transform:translateY(-4px);border-color:transparent;box-shadow:var(--shadow-lg)}
+  .mcard:hover::before{transform:scaleX(1)}
   .mcard .mc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
-  .mc-ico{width:42px;height:42px;border-radius:11px;background:var(--paper);display:grid;place-items:center;font-size:20px}
+  .mc-ico{width:44px;height:44px;border-radius:12px;background:linear-gradient(140deg,#eef3f8,#dfe8f1);display:grid;place-items:center;font-size:20px;box-shadow:inset 0 0 0 1px rgba(14,27,44,.05)}
   .mc-num{font-family:var(--mono);font-size:12px;color:var(--muted-2)}
   .mcard h4{font-family:var(--disp);font-size:15.5px;font-weight:600;margin-bottom:5px}
   .mcard p{font-size:12.8px;color:var(--muted);line-height:1.5;min-height:36px}
-  .prog{height:6px;background:var(--paper);border-radius:6px;margin-top:15px;overflow:hidden}
+  .prog{height:5px;background:#e7edf3;border-radius:6px;margin-top:16px;overflow:hidden}
   .prog > i{display:block;height:100%;background:linear-gradient(90deg,var(--go),var(--go-soft));border-radius:6px;transition:.5s}
   .mc-foot{display:flex;justify-content:space-between;align-items:center;margin-top:9px;font-size:11.5px;color:var(--muted-2)}
   .badge-done{color:var(--go);font-weight:600}
 
   /* generic content blocks */
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow);margin-bottom:18px}
   .panel p{font-size:14px;color:#33414f;margin-bottom:10px}
   .placeholder{
     border:1.5px dashed #c2cedb;border-radius:var(--radius);padding:26px;background:#fbfdff;color:var(--muted);
@@ -142,8 +159,8 @@
     font-family:var(--body);font-size:13.5px;font-weight:600;padding:10px 18px;border-radius:9px;border:0;cursor:pointer;
     transition:.15s;display:inline-flex;align-items:center;gap:7px;
   }
-  .btn-primary{background:var(--navy);color:#fff}
-  .btn-primary:hover{background:var(--navy-3)}
+  .btn-primary{background:linear-gradient(180deg,#1d3454,#13243a);color:#fff;box-shadow:0 2px 8px rgba(14,27,44,.2)}
+  .btn-primary:hover{background:linear-gradient(180deg,#244067,#16293f);transform:translateY(-1px);box-shadow:0 5px 14px rgba(14,27,44,.26)}
   .btn-go{background:var(--go);color:#fff}
   .btn-go:hover{background:var(--go-soft)}
   .btn-ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
@@ -592,17 +609,34 @@
   /* certificate */
   .cert-locked{text-align:center;padding:40px 20px}
   #certArea{display:flex;justify-content:center}
-  .cert{width:100%;max-width:720px;background:linear-gradient(135deg,#0E1B2C,#13294180);padding:10px;border-radius:14px}
-  .cert-border{border:2px solid var(--amber);border-radius:10px;padding:38px 34px;text-align:center;background:#0E1B2C;position:relative}
-  .cert-seal{position:absolute;top:24px;right:30px;width:50px;height:50px;border-radius:50%;background:var(--amber);color:var(--navy);display:grid;place-items:center;font-size:24px;box-shadow:0 4px 14px rgba(240,165,0,.4)}
-  .cert-brand{font-family:var(--disp);font-size:26px;font-weight:700;color:#fff;letter-spacing:4px}
-  .cert-sub{color:var(--amber);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:26px}
-  .cert-line{color:#aebccd;font-size:14px;max-width:520px;margin:0 auto;line-height:1.6}
-  .cert-name{font-family:var(--disp);font-size:34px;font-weight:600;color:#fff;margin:14px 0;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.15);display:inline-block;min-width:280px}
-  .cert-meta{display:flex;justify-content:center;gap:50px;margin:26px 0 18px}
-  .cert-meta .cm-v{font-family:var(--disp);font-size:18px;font-weight:600;color:var(--amber)}
-  .cert-meta .cm-l{font-size:11px;color:#8fa0b3;text-transform:uppercase;letter-spacing:.5px}
-  .cert-sign{color:#7e8ea0;font-size:12px;letter-spacing:1px;margin-top:8px}
+  .cert{width:100%;max-width:760px;padding:14px;border-radius:16px;background:#0E1B2C;
+    background-image:radial-gradient(circle at 18% 0%, rgba(240,165,0,.10), transparent 45%),radial-gradient(circle at 100% 100%, rgba(47,179,126,.07), transparent 45%);
+    box-shadow:0 30px 64px rgba(14,27,44,.34)}
+  .cert-border{border:2px solid var(--amber);border-radius:11px;padding:46px 44px 32px;text-align:center;position:relative;overflow:hidden;
+    background:repeating-radial-gradient(circle at 50% -10%, rgba(255,255,255,.02) 0 1px, transparent 1px 9px), linear-gradient(180deg,#0c1827,#0E1B2C)}
+  .cert-border::before{content:"";position:absolute;inset:8px;border:1px solid rgba(240,165,0,.30);border-radius:7px;pointer-events:none}
+  .cert-corner{position:absolute;width:22px;height:22px;border:2px solid var(--amber);opacity:.85}
+  .cert-corner.tl{top:14px;left:14px;border-right:0;border-bottom:0}
+  .cert-corner.tr{top:14px;right:14px;border-left:0;border-bottom:0}
+  .cert-corner.bl{bottom:14px;left:14px;border-right:0;border-top:0}
+  .cert-corner.br{bottom:14px;right:14px;border-left:0;border-top:0}
+  .cert-seal{width:76px;height:76px;border-radius:50%;margin:0 auto 16px;position:relative;display:grid;place-items:center;
+    background:radial-gradient(circle,#ffd674,#F0A500);color:var(--navy);font-size:30px;
+    box-shadow:0 6px 18px rgba(240,165,0,.45), inset 0 0 0 3px rgba(255,255,255,.4), inset 0 0 0 7px rgba(240,165,0,.55)}
+  .cert-seal::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:1.5px dashed rgba(240,165,0,.5)}
+  .cert-brand{font-family:var(--disp);font-size:24px;font-weight:700;color:#fff;letter-spacing:5px}
+  .cert-sub{color:var(--amber);font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+  .cert-title{font-family:var(--disp);font-size:12.5px;letter-spacing:4px;text-transform:uppercase;color:#9fb0c2;margin:20px 0 6px}
+  .cert-line{color:#aebccd;font-size:13.5px;max-width:540px;margin:0 auto;line-height:1.6}
+  .cert-name{font-family:var(--disp);font-size:38px;font-weight:600;color:#fff;margin:12px auto 10px;padding:0 26px 12px;border-bottom:1px solid rgba(240,165,0,.4);display:inline-block;min-width:300px;letter-spacing:.5px}
+  .cert-meta{display:flex;justify-content:center;gap:44px;margin:24px 0;flex-wrap:wrap}
+  .cert-meta .cm-v{font-family:var(--disp);font-size:17px;font-weight:600;color:var(--amber)}
+  .cert-meta .cm-l{font-size:10px;color:#8fa0b3;text-transform:uppercase;letter-spacing:.6px;margin-top:3px}
+  .cert-signs{display:flex;justify-content:space-around;gap:30px;margin-top:22px;flex-wrap:wrap}
+  .cert-sign-col{flex:1;min-width:170px;max-width:240px}
+  .cert-sign-name{font-family:var(--disp);font-size:14px;color:#fff;min-height:22px;border-bottom:1px solid rgba(255,255,255,.28);padding-bottom:7px;margin-bottom:7px}
+  .cert-sign-role{font-size:10px;color:#8fa0b3;text-transform:uppercase;letter-spacing:.8px}
+  .cert-verify{margin-top:22px;font-family:var(--mono);font-size:10.5px;color:#6f8197;letter-spacing:.5px}
 
   /* roleplay */
   .rp-meter-wrap{display:flex;align-items:center;gap:12px;margin-bottom:16px;max-width:520px}
@@ -682,6 +716,76 @@
   .ex-locked .ex-ico{font-size:40px}
   .ex-opt.correct{background:rgba(47,179,126,.15);border-color:var(--go);color:#1c7a52;font-weight:600}
   .ex-opt.wrong{background:rgba(232,105,61,.12);border-color:#e8693d;color:#b3461f}
+  @keyframes cardin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .grid .mcard{animation:cardin .4s cubic-bezier(.2,.7,.3,1) backwards}
+  .grid .mcard:nth-child(2){animation-delay:.05s}
+  .grid .mcard:nth-child(3){animation-delay:.1s}
+  .grid .mcard:nth-child(4){animation-delay:.15s}
+  .grid .mcard:nth-child(5){animation-delay:.2s}
+  .grid .mcard:nth-child(6){animation-delay:.25s}
+  .grid .mcard:nth-child(7){animation-delay:.3s}
+  @media (prefers-reduced-motion: reduce){ .grid .mcard{animation:none} }
+  /* learning objectives banner */
+  .mod-goals{background:linear-gradient(180deg,#fbfdff,#f3f7fb);border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:12px;padding:15px 18px;margin:0 0 22px}
+  .mod-goals .mg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px;flex-wrap:wrap}
+  .mg-eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:#8a5b00}
+  .mg-time{font-size:12px;color:var(--muted);font-weight:600}
+  .mg-list{list-style:none;display:grid;gap:6px}
+  .mg-list li{position:relative;padding-left:24px;font-size:13.5px;color:#33414f}
+  .mg-list li::before{content:"✓";position:absolute;left:0;top:0;color:var(--go);font-weight:700}
+  /* glossary */
+  .gl-search{width:100%;max-width:440px;padding:12px 16px;border:1px solid var(--line);border-radius:11px;font-size:14.5px;font-family:var(--body);background:var(--card);margin-bottom:6px}
+  .gl-search:focus{outline:0;border-color:var(--amber);box-shadow:0 0 0 3px rgba(240,165,0,.15)}
+  .gl-count{font-size:12.5px;color:var(--muted);margin:8px 0 18px}
+  .gl-group{margin-bottom:26px}
+  .gl-letter{font-family:var(--disp);font-size:13px;font-weight:600;color:var(--amber);letter-spacing:1px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px}
+  .gl-item{padding:11px 0;border-bottom:1px solid #eef2f6;display:grid;grid-template-columns:160px 1fr;gap:16px}
+  .gl-item:last-child{border:0}
+  .gl-term{font-weight:600;font-size:14px;color:#1c2b3d}
+  .gl-term .gl-tag{display:block;font-family:var(--mono);font-size:10px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.6px;margin-top:2px;font-weight:500}
+  .gl-def{font-size:13.5px;color:#41505f;line-height:1.55}
+  .gl-def code{font-family:var(--mono);font-size:12.5px;background:rgba(240,165,0,.12);padding:1px 6px;border-radius:5px;color:#8a5b00}
+  .gl-empty{color:var(--muted);font-size:14px;padding:30px 0;text-align:center}
+  @media(max-width:560px){.gl-item{grid-template-columns:1fr;gap:4px}}
+  /* common-mistakes callout */
+  .pitfall{background:rgba(232,105,61,.06);border:1px solid rgba(232,105,61,.25);border-left:3px solid var(--warn);border-radius:12px;padding:15px 18px;margin:18px 0}
+  .pitfall h4{font-family:var(--disp);font-size:14px;color:#b3461f;margin-bottom:9px;display:flex;align-items:center;gap:8px}
+  .pitfall ul{list-style:none;display:grid;gap:7px}
+  .pitfall li{position:relative;padding-left:22px;font-size:13.5px;color:#5a3a2e;line-height:1.5}
+  .pitfall li::before{content:"✕";position:absolute;left:0;top:0;color:var(--warn);font-weight:700}
+  .pitfall li b{color:#8a3618}
+  .admin-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:6px 0 14px;flex-wrap:wrap}
+  .mdot-legend{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .mdots{display:inline-flex;gap:3px;vertical-align:middle}
+  .mdot{width:10px;height:10px;border-radius:50%;display:inline-block;background:#dde5ee;border:1px solid #cdd8e4}
+  .mdot.done{background:var(--go);border-color:var(--go)}
+  .mdot.part{background:var(--amber);border-color:var(--amber)}
+  .mdot.none{background:#e7edf3;border-color:#d8e0e9}
+  .mdot-legend .mdot{margin:0 1px 0 6px}
+  /* airline policies module */
+  .air-verify{background:rgba(47,179,126,.08);border:1px solid rgba(47,179,126,.3);border-radius:11px;padding:12px 15px;font-size:13px;color:#1c5c43;margin-bottom:16px;line-height:1.5}
+  .air-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .air-tab{font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;color:var(--muted);transition:.15s}
+  .air-tab:hover{border-color:#b9c6d6;color:var(--ink)}
+  .air-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .air-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow);overflow:hidden}
+  .air-head{display:flex;align-items:center;gap:16px;padding:20px 22px;background:var(--ac,#0E1B2C);color:#fff}
+  .air-badge{font-family:var(--mono);font-weight:600;font-size:20px;letter-spacing:1px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:10px 12px;min-width:58px;text-align:center}
+  .air-headtext h3{font-family:var(--disp);font-size:20px;font-weight:600;margin-bottom:4px}
+  .air-sub{font-size:12px;color:rgba(255,255,255,.82);line-height:1.45}
+  .air-sub b{color:#fff;font-weight:600}
+  .air-fares{padding:14px 22px;background:rgba(240,165,0,.07);border-bottom:1px solid var(--line);font-size:13.5px;color:#33414f;line-height:1.55}
+  .air-fares b{font-family:var(--disp);color:var(--navy)}
+  .air-stamp{padding:8px 22px;background:#f7fafc;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted-2);letter-spacing:.3px}
+  .air-sec{padding:16px 22px;border-bottom:1px solid #eef2f6}
+  .air-sec:last-child{border-bottom:0}
+  .air-sec h4{font-family:var(--disp);font-size:14.5px;font-weight:600;color:#1c2b3d;margin-bottom:11px}
+  .air-row{display:grid;grid-template-columns:172px 1fr;gap:14px;padding:7px 0;border-top:1px solid #f1f5f9;font-size:13.5px;line-height:1.5}
+  .air-row:first-of-type{border-top:0}
+  .air-k{color:var(--muted);font-weight:600}
+  .air-v{color:#33414f}
+  .air-note{font-size:13.5px;color:#33414f;line-height:1.55}
+  @media(max-width:560px){.air-row{grid-template-columns:1fr;gap:2px}.air-k{color:#1c2b3d}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -703,6 +807,8 @@
       <div class="nav-item" data-view="roleplay"><span class="nav-num">▶</span><span class="nav-ico">🎭</span>Roleplay Call</div>
       <div class="nav-item" data-view="exam"><span class="nav-num">★</span><span class="nav-ico">📝</span>Final Exam</div>
       <div class="nav-item" data-view="cert"><span class="nav-num">✦</span><span class="nav-ico">🏆</span>Certificate</div>
+      <div class="nav-label">Reference</div>
+      <div class="nav-item" data-view="glossary"><span class="nav-num">≡</span><span class="nav-ico">📖</span>Glossary</div>
     </nav>
     <div class="side-foot" id="sideFoot">Signed in as <b>New Agent</b><br>Add your name on the dashboard</div>
   </aside>
@@ -730,13 +836,14 @@
 
 /* ---- Module registry (drives nav + dashboard) ---- */
 const MODULES = [
-  {id:"company",  num:"01", ico:"🏢", title:"Welcome to CTD",        desc:"Who we are, our mission, and how the agency is structured."},
-  {id:"leaves",   num:"02", ico:"🗓️", title:"Leave & Attendance",    desc:"How to request leave, approval flow, and attendance rules."},
-  {id:"iata",     num:"03", ico:"🛫", title:"IATA Codes & Pronunciation", desc:"Learn airport codes for US, CA, UK, Caribbean & LatAm — hear them and test yourself."},
-  {id:"amadeus",  num:"04", ico:"⌨️", title:"Amadeus GDS",           desc:"Start from zero — learn to read the codes, then build a real booking step by step."},
-  {id:"process",  num:"05", ico:"⚙️", title:"How We Work",           desc:"Our booking process and the platforms we are listed on."},
-  {id:"sales",    num:"06", ico:"📞", title:"Selling Skills",        desc:"Call handling, rapport, objection handling and closing."},
-  {id:"verify",   num:"07", ico:"🛡️", title:"Verification Process",  desc:"Our fraud-check and booking verification workflow."},
+  {id:"company",  num:"01", ico:"🏢", title:"Welcome to CTD",        desc:"Who we are, our mission, and how the agency is structured.", mins:15, goals:["Explain what CTD does and the markets we serve","Know our phone lines and Spanish-language site","Describe how a booking moves from quote to support"]},
+  {id:"leaves",   num:"02", ico:"🗓️", title:"Leave & Attendance",    desc:"How to request leave, approval flow, and attendance rules.", mins:10, goals:["Tell CL, UL and week-off apart","Request leave the right way, with the right notice","Avoid the attendance mistakes that cost a day's pay"]},
+  {id:"iata",     num:"03", ico:"🛫", title:"IATA Codes & Pronunciation", desc:"Learn airport codes for US, CA, UK, Caribbean & LatAm — hear them and test yourself.", mins:40, goals:["Recognise 500+ airport codes by city and region","Pronounce airport names clearly on a live call","Locate any airport by state, province or country"]},
+  {id:"amadeus",  num:"04", ico:"⌨️", title:"Amadeus GDS",           desc:"Start from zero — learn to read the codes, then build a real booking step by step.", mins:35, goals:["Read an availability and pricing display","Build a PNR step by step: name, segments, contacts","Price, end and retrieve a booking confidently"]},
+  {id:"process",  num:"05", ico:"⚙️", title:"How We Work",           desc:"Our booking process and the platforms we are listed on.", mins:12, goals:["Walk the full booking lifecycle end to end","Know where our fares appear for customers","Hand off cleanly between quote, book and verify"]},
+  {id:"sales",    num:"06", ico:"📞", title:"Selling Skills",        desc:"Call handling, rapport, objection handling and closing.", mins:25, goals:["Open a call and build rapport fast","Handle the common objections without pressure","Sell on value and close with the change window"]},
+  {id:"verify",   num:"07", ico:"🛡️", title:"Verification Process",  desc:"Our fraud-check and booking verification workflow.", mins:18, goals:["Explain why we verify and what it protects against","Run the right checks for travel inside 30 days","Spot red flags and escalate the right way"]},
+  {id:"airlines", num:"08", ico:"📋", title:"Airline Policies",       desc:"Bag fees, changes, unaccompanied minors & pets across 8 major carriers — your quick reference for live calls.", mins:30, goals:["Quote current bag, change and cancellation rules for 8 major airlines","Explain unaccompanied-minor and pet rules confidently on a call","Know which facts change often — and to confirm the live fee in the GDS"]},
 ];
 
 const progress = {}; // id -> 0..100
@@ -1698,12 +1805,13 @@ function viewDash(){
   const overall = Math.round(Object.values(progress).reduce((a,b)=>a+b,0)/MODULES.length);
   return `
   <div class="hero">
+    <div class="hero-ring" style="--p:${overall}"><span>${overall}%</span><small>complete</small></div>
     <div class="eyebrow">Onboarding · 2026 intake</div>
     <h2>Welcome aboard${agentName?', '+agentName.split(/\s+/)[0]:''}. Let's get you flying.</h2>
     <p>Seven modules take you from day-one basics to handling live customer calls with confidence. Work through them in order — the dashboard tracks where you are.</p>
     <div class="name-row"><label for="agentNameInput">Your name</label><input id="agentNameInput" placeholder="Type your name for your certificate" value="${agentName.replace(/"/g,'&quot;')}" oninput="setName(this.value)"></div>
     <div class="hero-stats">
-      <div class="hero-stat"><div class="n">${done}/7</div><div class="l">Modules done</div></div>
+      <div class="hero-stat"><div class="n">${done}/${MODULES.length}</div><div class="l">Modules done</div></div>
       <div class="hero-stat"><div class="n">${overall}%</div><div class="l">Overall progress</div></div>
       <div class="hero-stat"><div class="n">${examPassed?'✓':examBest?examBest+'%':'—'}</div><div class="l">Final exam</div></div>
     </div>
@@ -1713,7 +1821,7 @@ function viewDash(){
     ${MODULES.map(m=>{
       const p = progress[m.id];
       return `<div class="mcard" data-view="${m.id}">
-        <div class="mc-top"><div class="mc-ico">${m.ico}</div><div class="mc-num">MODULE ${m.num}</div></div>
+        <div class="mc-top"><div class="mc-ico">${m.ico}</div><div class="mc-num">MODULE ${m.num} · ⏱ ${m.mins}m</div></div>
         <h4>${m.title}</h4>
         <p>${m.desc}</p>
         <div class="prog"><i style="width:${p}%"></i></div>
@@ -2772,6 +2880,7 @@ function viewSales(){return `
   </div>
 
   ${presenterMarkup()}
+  <div class="pitfall"><h4>⚠️ Common mistakes to avoid</h4><ul><li><b>Inventing urgency.</b> Never say a price will vanish in minutes or call it a "glitch" to rush a decision. Real reassurance closes; fake pressure loses trust.</li><li><b>Running down competitors.</b> It sounds defensive. Sell what <i>we</i> do well instead.</li><li><b>Quoting only the lowest number.</b> Price alone invites comparison shopping — pair it with service, support and the change window.</li><li><b>Talking over the objection.</b> Hear the real concern first, then answer it. A rushed answer to the wrong worry doesn't land.</li></ul></div>
   ${moduleGateHTML('sales')}
   </div>`;
 }
@@ -2929,6 +3038,7 @@ function viewVerify(){return `
   </div>
 
   ${presenterMarkup()}
+  <div class="pitfall"><h4>⚠️ Common mistakes to avoid</h4><ul><li><b>Treating verification as optional</b> for friendly-sounding callers. Fraud rarely looks suspicious — the step protects everyone, every time.</li><li><b>Saying "it's mandatory"</b> with no reason. Always frame it as protection <i>for the customer</i>, which lowers resistance.</li><li><b>Skipping the "I approve" email</b> on travel within 30 days. That written approval is your strongest defence against a chargeback.</li><li><b>Ignoring red flags</b> because the booking is large. The bigger the sale, the more a red flag matters — slow down and escalate.</li></ul></div>
   ${moduleGateHTML('verify')}
   </div>`;
 }
@@ -3133,6 +3243,7 @@ function viewAmadeus(){
   </div>
 
   ${presenterMarkup()}
+  <div class="pitfall"><h4>⚠️ Common mistakes to avoid</h4><ul><li><b>Forgetting to end the transaction.</b> Your work isn't saved until you commit it (ER / ET) — close the browser before that and the PNR is gone.</li><li><b>Leaving out a date of birth</b> for an infant or child. The fare and the airline's checks depend on it.</li><li><b>Confusing the record locator with a flight number.</b> The 6-character locator (e.g. ABC123) is the booking; the flight number is the aircraft.</li><li><b>Assuming a quoted fare is locked.</b> A price isn't secured until the booking is complete and ticketed — re-check before you promise it.</li></ul></div>
   ${moduleGateHTML('amadeus')}
   </div>`;
 }
@@ -3315,6 +3426,15 @@ const EXAM_POOL = [
 
   {m:"Amadeus", q:"Which entry ignores all changes and reverts the PNR?", opts:["IG (Ignore)","ER","RT","XE"], a:0},
   {m:"Amadeus", q:"Which displays the PNR you're currently working in?", opts:["RT","DD","FXP","NM"], a:0},
+
+  {m:"Airlines", q:"Which major US airline ended its \"Bags Fly Free\" policy in 2025?", opts:["Southwest","Delta","JetBlue","Alaska"], a:0},
+  {m:"Airlines", q:"Before quoting a checked-bag fee to a customer, you should always…", opts:["Confirm the live fee in Amadeus — fees change often","Quote the fee from memory","Add $20 to be safe","Tell them it's free"], a:0},
+  {m:"Airlines", q:"A customer wants to fly a large dog in the cargo hold. Which of these still offers pet cargo to the public?", opts:["Alaska","Southwest","JetBlue","United"], a:0},
+  {m:"Airlines", q:"On United, what does a Basic Economy passenger get for carry-on?", opts:["A personal item only — no full carry-on","Two carry-ons","One carry-on + personal item","Three bags free"], a:0},
+  {m:"Airlines", q:"For most carriers (Delta, American, Alaska, Aeromexico, Avianca), unaccompanied minors are booked…", opts:["By phone or an agent — not online","Only online","At the gate","Through email"], a:0},
+  {m:"Airlines", q:"An in-cabin pet must…", opts:["Stay inside its carrier under the seat at all times","Sit on the passenger's lap","Travel in the overhead bin","Be walked during the flight"], a:0},
+  {m:"Airlines", q:"A checked bag weighs 60 lb. It is…", opts:["Overweight (51–70 lb) — an extra fee applies on top of the bag fee","Free","Refused at all airlines","Oversized"], a:0},
+  {m:"Airlines", q:"Southwest unaccompanied minors and in-cabin pets are limited to…", opts:["Nonstop/direct, Southwest-operated US flights only","Any flight including international","Connecting flights only","Codeshare partners"], a:0},
 ];
 const EXAM_N = 100;       // questions per attempt
 const EXAM_PASS = 85;     // percent to pass
@@ -3444,23 +3564,31 @@ function viewCert(){
   }
   const name = agentName || 'New Agent';
   const date = new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+  const credId = 'CTD-'+String(agentId||'XXXXXXXX').replace(/[^a-zA-Z0-9]/g,'').slice(-8).toUpperCase()+'-'+new Date().getFullYear();
   return `
   <h2 class="page-title">Your Certificate</h2>
-  <p class="page-sub">Congratulations! Here's your CTD Academy completion certificate. Use the button to print it or save as PDF.</p>
+  <p class="page-sub">Congratulations${agentName?', '+agentName.split(/\s+/)[0]:''}! Here's your CTD Academy completion certificate. Print it or save it as a PDF — your trainer can countersign the printed copy.</p>
   <div id="certArea">
     <div class="cert">
       <div class="cert-border">
-        <div class="cert-seal">★</div>
+        <span class="cert-corner tl"></span><span class="cert-corner tr"></span><span class="cert-corner bl"></span><span class="cert-corner br"></span>
+        <div class="cert-seal">✈</div>
         <div class="cert-brand">CTD ACADEMY</div>
-        <div class="cert-sub">Agent Onboarding Program</div>
+        <div class="cert-sub">CheapTicketsDeal · Agent Onboarding</div>
+        <div class="cert-title">Certificate of Completion</div>
         <div class="cert-line">This certifies that</div>
         <div class="cert-name">${name}</div>
-        <div class="cert-line">has successfully completed CheapTicketsDeal agent onboarding training, demonstrating knowledge of our company, leave policy, IATA codes, Amadeus GDS, selling skills and the verification process.</div>
+        <div class="cert-line">has successfully completed the CheapTicketsDeal agent onboarding programme — covering the company, leave &amp; attendance, IATA codes, the Amadeus GDS, our booking process, selling skills and the verification process — and passed the final assessment.</div>
         <div class="cert-meta">
-          <div><div class="cm-v">${examBest}%</div><div class="cm-l">Final exam score</div></div>
+          <div><div class="cm-v">${examBest}%</div><div class="cm-l">Final exam</div></div>
+          <div><div class="cm-v">${MODULES.length} / ${MODULES.length}</div><div class="cm-l">Modules</div></div>
           <div><div class="cm-v">${date}</div><div class="cm-l">Date completed</div></div>
         </div>
-        <div class="cert-sign">CheapTicketsDeal · CTD Academy</div>
+        <div class="cert-signs">
+          <div class="cert-sign-col"><div class="cert-sign-name">&nbsp;</div><div class="cert-sign-role">Trainer signature</div></div>
+          <div class="cert-sign-col"><div class="cert-sign-name">CheapTicketsDeal</div><div class="cert-sign-role">CTD Academy</div></div>
+        </div>
+        <div class="cert-verify">CREDENTIAL ID — ${credId}</div>
       </div>
     </div>
   </div>
@@ -3599,35 +3727,60 @@ async function adminLoad(){
     renderAdmin(data||[]);
   }catch(e){ adminMsg('<div class="placeholder">Network error loading data. Tap Refresh to retry.</div>'); }
 }
+let _adminRows=[];
+function admProg(r){ let p=r.progress; if(typeof p==='string'){ try{p=JSON.parse(p);}catch(e){p={};} } return p||{}; }
+function admDots(r){ const p=admProg(r); return `<span class="mdots">`+MODULES.map(m=>{ const v=p[m.id]||0; const cls=v>=100?'done':(v>0?'part':'none'); return `<span class="mdot ${cls}" title="${escHtml(m.title)}: ${v>=100?'done':(v>0?v+'%':'not started')}"></span>`; }).join('')+`</span>`; }
+function csvCell(v){ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function adminCSV(){
+  const rows=_adminRows||[];
+  const cols=['Agent','Modules done','Exam best %','Passed','Last active'].concat(MODULES.map(m=>m.title));
+  const lines=[cols.map(csvCell).join(',')];
+  rows.forEach(r=>{ const p=admProg(r);
+    const base=[r.agent_name||'', (r.modules_done||0)+'/'+(r.modules_total||7), r.exam_best||'', r.exam_passed?'Yes':'No', fmtTime(r.updated_at)];
+    const mods=MODULES.map(m=>(p[m.id]||0));
+    lines.push(base.concat(mods).map(csvCell).join(','));
+  });
+  const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a');
+  a.href=url; a.download='ctd-agent-progress-'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
 function renderAdmin(rows){
+  _adminRows=rows;
   const total=rows.length;
   const passed=rows.filter(r=>r.exam_passed).length;
   const finished=rows.filter(r=>(r.modules_done||0)>=(r.modules_total||7)).length;
+  const attempted=rows.filter(r=>r.exam_best>0);
+  const avg=attempted.length?Math.round(attempted.reduce((a,r)=>a+(r.exam_best||0),0)/attempted.length):0;
   const head=`<div class="admin-stats">
     <div class="admin-stat"><div class="n">${total}</div><div class="l">Agents</div></div>
-    <div class="admin-stat"><div class="n">${passed}</div><div class="l">Passed exam</div></div>
     <div class="admin-stat"><div class="n">${finished}</div><div class="l">All modules done</div></div>
+    <div class="admin-stat"><div class="n">${passed}</div><div class="l">Passed exam</div></div>
+    <div class="admin-stat"><div class="n">${avg?avg+'%':'—'}</div><div class="l">Avg exam score</div></div>
     <div class="admin-stat"><div class="n live">● live</div><div class="l">Auto-updating</div></div>
+  </div>`;
+  const toolbar=`<div class="admin-toolbar">
+    <div class="mdot-legend"><span class="mdot done"></span> done <span class="mdot part"></span> in progress <span class="mdot none"></span> not started</div>
+    <div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="adminLoad()">Refresh</button><button class="btn btn-primary" onclick="adminCSV()">⬇ Export CSV</button></div>
   </div>`;
   if(!total){ adminMsg(head+'<div class="placeholder">No agents yet. As soon as someone opens the training on the live site and types their name, they\'ll show up here.</div>'); return; }
   const body=rows.map(r=>`
     <tr>
       <td><b>${escHtml(r.agent_name||'—')}</b></td>
-      <td>${(r.modules_done||0)}/${(r.modules_total||7)}</td>
+      <td>${admDots(r)} <span class="muted" style="font-size:11px">${(r.modules_done||0)}/${(r.modules_total||7)}</span></td>
       <td>${r.exam_best?escHtml(r.exam_best)+'%':'—'}</td>
       <td>${r.exam_passed?'<span class="abadge pass">Passed</span>':'<span class="abadge">In progress</span>'}</td>
       <td class="muted">${fmtTime(r.updated_at)}</td>
     </tr>`).join('');
-  adminMsg(head+`<div class="admin-tablewrap"><table class="admin-table">
-    <thead><tr><th>Agent</th><th>Modules</th><th>Best exam</th><th>Status</th><th>Last active</th></tr></thead>
-    <tbody>${body}</tbody></table></div>
-    <div style="margin-top:12px"><button class="btn btn-ghost" onclick="adminLoad()">Refresh now</button></div>`);
+  adminMsg(head+toolbar+`<div class="admin-tablewrap"><table class="admin-table">
+    <thead><tr><th>Agent</th><th>Module progress</th><th>Best exam</th><th>Status</th><th>Last active</th></tr></thead>
+    <tbody>${body}</tbody></table></div>`);
 }
 
 /* ============================================================
    MODULE CHECKPOINTS — must pass to complete a module
    ============================================================ */
-const MODULE_TAG = {company:"Company", leaves:"Leave", iata:"IATA", amadeus:"Amadeus", process:"Process", sales:"Sales", verify:"Verification"};
+const MODULE_TAG = {company:"Company", leaves:"Leave", iata:"IATA", amadeus:"Amadeus", process:"Process", sales:"Sales", verify:"Verification", airlines:"Airlines"};
 const GATE_N = 6, GATE_PASS = 80;
 function allModulesDone(){ return MODULES.every(m=>progress[m.id]>=100); }
 function nextModuleId(mid){ const i=MODULES.findIndex(m=>m.id===mid); return (i>=0&&i<MODULES.length-1)?MODULES[i+1].id:null; }
@@ -3759,10 +3912,299 @@ function iaxFinish(){
     <button class="btn btn-ghost" onclick="go('dash')">Dashboard</button></div>`;
 }
 
+const GLOSSARY_TERMS = [
+  {t:"Consolidator", g:"company", d:"A travel company (like CTD) that buys airline seats in bulk at negotiated, often unpublished, fares and sells them on to customers — usually cheaper than the airline's own site."},
+  {t:"OTA", g:"company", d:"Online Travel Agency. A site that sells flights, hotels and travel online. CTD operates as a phone-first OTA / consolidator."},
+  {t:"IATA", g:"company", d:"International Air Transport Association — the airline trade body. IATA accreditation lets an agency issue tickets directly; it also defines the 3-letter airport codes."},
+  {t:"Metasearch", g:"company", d:"A site that compares fares from many sellers (e.g. Kayak, Momondo, Cheapflights). Our fares are listed there so customers can find us."},
+  {t:"PNR", g:"gds", d:"Passenger Name Record — the booking file in the GDS that holds the traveller's name, flights, contacts and ticketing info. Identified by a 6-character record locator."},
+  {t:"Record locator", g:"gds", d:"The 6-character code (e.g. ABC123) that uniquely identifies a PNR. Customers often call it their 'booking reference' or 'confirmation code'."},
+  {t:"GDS", g:"gds", d:"Global Distribution System — the platform (for us, Amadeus) used to search availability, price fares and create bookings across many airlines."},
+  {t:"Amadeus", g:"gds", d:"The GDS CTD uses to make bookings. Module 04 teaches you to read its displays and build a PNR step by step."},
+  {t:"Availability", g:"gds", d:"A display of flights and how many seats are for sale in each booking class on a given date and route."},
+  {t:"Booking class", g:"gds", d:"A single letter (e.g. Y, B, M, Q) showing the fare bucket of a seat. Lower buckets are cheaper but more restricted."},
+  {t:"Segment", g:"gds", d:"One flight in an itinerary — one departure and arrival. A round trip has at least two segments."},
+  {t:"Itinerary", g:"travel", d:"The full set of flights and timings for a trip, start to finish."},
+  {t:"Fare", g:"travel", d:"The price of the ticket itself, before taxes and fees. 'Total fare' usually means fare + taxes."},
+  {t:"Fare rules", g:"travel", d:"The conditions attached to a fare — changes, refunds, baggage, validity. Always check before promising anything to a customer."},
+  {t:"e-Ticket", g:"travel", d:"The electronic record of a purchased ticket. The customer gets an e-ticket number once payment is confirmed and the ticket is issued."},
+  {t:"Ticketing", g:"travel", d:"The step that turns a held booking into a purchased, issued ticket. Until ticketing, a fare can still be lost."},
+  {t:"One-way / Round trip", g:"travel", d:"One-way is a single direction; round trip returns to the origin. 'Open-jaw' returns to a different city."},
+  {t:"Layover / Connection", g:"travel", d:"A stop between flights where the traveller changes planes. A long layover can be a selling point or an objection."},
+  {t:"Red-eye", g:"travel", d:"An overnight flight that departs late and arrives early morning — often cheaper."},
+  {t:"Cabin class", g:"travel", d:"The service level: Economy, Premium Economy, Business or First. Different from booking class, which is the fare bucket within a cabin."},
+  {t:"Stopover", g:"travel", d:"A connection long enough (often 24h+) to count as a deliberate stop in a city, sometimes allowed by the fare."},
+  {t:"No-show", g:"travel", d:"When a passenger doesn't turn up for a flight without cancelling. It can void the rest of the itinerary."},
+  {t:"Chargeback", g:"verify", d:"When a cardholder disputes a charge with their bank and the money is reversed. Verification exists largely to prevent these."},
+  {t:"Card verification", g:"verify", d:"Our security step to confirm the person paying owns the card — protecting the customer and CTD from fraud."},
+  {t:"\"I approve\" email", g:"verify", d:"A short written confirmation from the cardholder approving the charge — strong protection, especially for travel within 30 days."},
+  {t:"Red flag", g:"verify", d:"A warning sign in a booking (mismatched details, urgency, reluctance to verify) that means slow down and escalate."},
+  {t:"CL — Casual Leave", g:"leave", d:"Planned time off requested in advance through the proper channel. (Confirm your exact allowance with your senior.)"},
+  {t:"UL — Unplanned Leave", g:"leave", d:"Leave taken without proper notice. It typically costs a day's pay — avoid it where you can."},
+  {t:"Week-off", g:"leave", d:"Your scheduled day off in the week. Choosing your own day usually needs at least a week's notice."},
+  {t:"Rapport", g:"sales", d:"The sense of trust and connection you build with a caller. It's the foundation of every good sale."},
+  {t:"Objection", g:"sales", d:"A reason a customer gives for hesitating ('too expensive', 'is this real?'). Handled well, it's a step toward the sale, not a wall."},
+  {t:"Close", g:"sales", d:"Guiding the customer to a confident decision to book — calmly and honestly, never by pressure."},
+  {t:"Value selling", g:"sales", d:"Selling on the whole package — service, support, the fare and the change window — not just the lowest number."},
+  {t:"Change window", g:"sales", d:"The 24-hour period in which many bookings can be changed — a genuine reassurance you can offer at the close."}
+];
+function viewGlossary(){
+  return `
+  <h2 class="page-title">Glossary</h2>
+  <p class="page-sub">Every term a new agent hears in their first weeks — airline, GDS, sales and company language — in plain English. Search or scroll.</p>
+  <input id="glSearch" class="gl-search" placeholder="Search terms (e.g. PNR, chargeback, rapport)…" oninput="renderGlossary(this.value)" autocomplete="off">
+  <div class="gl-count" id="glCount"></div>
+  <div id="glList"></div>`;
+}
+function initGlossary(){ renderGlossary(''); }
+const GL_TAGS={company:"Company",gds:"GDS",travel:"Travel",verify:"Verification",leave:"Leave",sales:"Sales"};
+function renderGlossary(q){
+  const list=document.getElementById('glList'), count=document.getElementById('glCount'); if(!list) return;
+  q=(q||'').trim().toLowerCase();
+  let items=GLOSSARY_TERMS.filter(x=> !q || x.t.toLowerCase().includes(q) || x.d.toLowerCase().includes(q));
+  items=items.slice().sort((a,b)=>a.t.replace(/[^a-z]/gi,'').toLowerCase().localeCompare(b.t.replace(/[^a-z]/gi,'').toLowerCase()));
+  if(count) count.textContent = items.length+' term'+(items.length===1?'':'s')+(q?` matching “${q}”`:'');
+  if(!items.length){ list.innerHTML=`<div class="gl-empty">No terms match that — try a shorter word.</div>`; return; }
+  const groups={};
+  items.forEach(x=>{ const L=x.t.replace(/[^a-zA-Z]/g,'').charAt(0).toUpperCase(); (groups[L]=groups[L]||[]).push(x); });
+  list.innerHTML = Object.keys(groups).sort().map(L=>`
+    <div class="gl-group"><div class="gl-letter">${L}</div>
+    ${groups[L].map(x=>`<div class="gl-item"><div class="gl-term">${escHtml(x.t)}<span class="gl-tag">${GL_TAGS[x.g]||''}</span></div><div class="gl-def">${x.d}</div></div>`).join('')}
+    </div>`).join('');
+}
+function moduleGoalsHTML(id){
+  const m=MODULES.find(x=>x.id===id); if(!m||!m.goals) return '';
+  return `<div class="mod-goals">
+    <div class="mg-head"><span class="mg-eyebrow">In this module</span><span class="mg-time">⏱ about ${m.mins} min</span></div>
+    <ul class="mg-list">${m.goals.map(g=>`<li>${g}</li>`).join('')}</ul>
+  </div>`;
+}
+const VIEWS_GOALS_MARKER = true;
+
+/* ============================================================
+   MODULE 08 — AIRLINE POLICIES (8 carriers)
+   Bag fees verified vs. official airline sites, June 2026.
+   ============================================================ */
+const AIRLINES = [
+  {code:"DL", short:"Delta", name:"Delta Air Lines", color:"#9e1b32", reviewed:"Bag fees verified vs delta.com · Jun 2026",
+   hubs:"ATL, DTW, MSP, SLC, LAX, JFK, LGA, SEA, BOS", regional:"Endeavor Air (Delta Connection)",
+   fares:"Main (Basic / Classic / Extra) · Comfort+ · Premium Select · First. Main Basic is the cheapest and most restricted — no changes, no upgrades, last to board.",
+   bags:{carry:"1 carry-on (22 x 14 x 9 in) + 1 personal item — free on every fare, including Main Basic.",
+     checked:"Domestic: 1st $45 · 2nd $55 · 3rd $200 (raised 8 Apr 2026). Limit 50 lb / 62 linear in.",
+     intl:"Often 1st free to Europe/Asia; Mexico about $30-$55; elsewhere about $75-$100.",
+     free:"1 free checked bag for SkyMiles Medallion members and Delta Amex cardholders. First / Premium Select get 2 free."},
+   over:"51-70 lb: +$100 · 71-100 lb: +$200 · over 100 lb not accepted. Oversize 62-80 in: +$200.",
+   umnr:{ages:"Under 5 not alone · 5-7 nonstop only · 8-14 nonstop & connecting · 15-17 optional.",
+     fee:"$150 each way (covers up to 4 siblings on one itinerary).",
+     book:"Phone or agent only - not bookable online. Delta UMNR desk: 1-800-325-8847.",
+     note:"No red-eye flights (9pm-5am) except international; not on the last connection of the day. Delta / Delta Connection / KLM / Air France only."},
+   noshow:"Cancel or change before departure or the ticket value is lost. Cancelling before the flight preserves the value as an eCredit.",
+   pet:{allow:"Small dogs, cats and household birds in cabin (birds US-domestic only).",
+     fee:"$150 each way in cabin (US / Canada / PR / USVI); $200 international.",
+     weight:"No set weight - pet plus kennel must fit under the seat in front.",
+     note:"Not allowed in Delta One, Premium Select, bulkhead or exit-row seats. No pets on flights over 12 hours."},
+   kennel:"Soft-sided, leak-proof, ventilated, about 18 x 11 x 11 in. Must fit under the seat and counts as your one carry-on."},
+
+  {code:"UA", short:"United", name:"United Airlines", color:"#1c3f94", reviewed:"Bag fees verified vs united.com · Jun 2026",
+   hubs:"ORD, EWR, IAD, IAH, DEN, SFO, LAX", regional:"GoJet, Mesa Airlines",
+   fares:"Basic Economy · Economy · Economy Plus · Business/First. Basic Economy boards last and is non-changeable.",
+   bags:{carry:"Economy & up: 1 carry-on (22 x 14 x 9 in) + personal item. Basic Economy: personal item ONLY (no full carry-on, except to Europe/Asia) - a key difference from Delta/American.",
+     checked:"Domestic: 1st $45 ($50 at airport) · 2nd $55 (matched Delta, spring 2026). 50 lb Economy / 70 lb Business.",
+     intl:"1 free on long-haul Economy; 2nd about $100. Business/First: 2 free.",
+     free:"1 free bag for United Chase cardholders and Premier elites. Business/First get 2."},
+   over:"51-70 lb: +$100-$200 · 71-100 lb: +$200 · over 100 lb not accepted. Oversize up to 115 in: +$200.",
+   umnr:{ages:"Under 5 not alone · 5-14 mandatory UMNR · 15-17 may fly alone (optional service).",
+     fee:"$150 each way for 1-2 minors; $300 for 3-4 (doubles for round trips).",
+     book:"United.com or United Reservations; parent checks the child in at the counter.",
+     note:"Nonstop United / United Express only - no connections, no codeshares, no other airlines."},
+   noshow:"Miss a flight and rebooking runs about $200 domestic; award tickets need a $125 mileage redeposit. United typically holds the seat ~30 min after departure.",
+   pet:{allow:"Small dogs and cats only, in cabin. Cargo is restricted to active military / State Dept.",
+     fee:"$150 each way; extra $150 for layovers over 4 hr domestic / 24 hr international.",
+     weight:"No set weight - pet must fit comfortably in the carrier under the seat.",
+     note:"2 pets requires buying a second seat. Travel credits cannot pay pet fees. Not in exit rows / Premium Plus / front-row seats."},
+   kennel:"Hard-sided about 17.5 x 12 x 7.5 in, or soft-sided about 18 x 11 x 11 in. Must fit under the seat."},
+
+  {code:"AA", short:"American", name:"American Airlines", color:"#0b3d6b", reviewed:"Bag fees verified vs aa.com · Jun 2026",
+   hubs:"DFW, CLT, ORD, MIA, PHL, PHX, DCA, LAX, JFK", regional:"Envoy, Piedmont, PSA",
+   fares:"Basic Economy · Main Cabin · Premium Economy · Business · First.",
+   bags:{carry:"1 carry-on (22 x 14 x 9 in) + personal item - free on every fare, including Basic Economy.",
+     checked:"Main Cabin domestic: 1st $45 online / $50 airport · 2nd $55 / $60 · 3rd $200 (eff. 18 May 2026). Basic Economy pays $5 more per bag (AA is the only carrier that charges Basic more).",
+     intl:"Premium Economy / Business / First usually include 1-2 free; Main Cabin & Basic vary by region.",
+     free:"AAdvantage status & most AAdvantage cardholders get 1 free; premium cabins get more."},
+   over:"50-53 lb: +$30 · 53-70 lb: +$100 · 71-100 lb: +$200. Oversize 62-65 in: +$30 · 65-115 in: +$200. Both over+oversize = the higher fee.",
+   umnr:{ages:"0-4 not alone · 5-7 nonstop only · 8-14 nonstop & connecting · 15-17 optional, no fee.",
+     fee:"$150 each way (one fee covers up to 4 children on the itinerary).",
+     book:"American Reservations or an agent: 1-800-433-7300.",
+     note:"AA / American Eagle only - no codeshares. No red-eyes, not the last connection of the day. Connections only at AA hubs."},
+   noshow:"Cancel or change before departure to keep the value. The 24-hour free-cancel window applies for tickets bought 2+ days before travel.",
+   pet:{allow:"Small dogs and cats in cabin. Snub-nosed (brachycephalic) breeds barred from checked/cargo.",
+     fee:"$150 each way (continental US, Mexico, Alaska, PR, USVI).",
+     weight:"Pet + carrier must not exceed 20 lb (9 kg).",
+     note:"Not in cabin to/from Hawaii or on transatlantic flights. Must fit under the seat."},
+   kennel:"Soft-sided, leak-proof, ventilated, about 18 x 11 x 11 in. Must fit under the seat."},
+
+  {code:"AS", short:"Alaska", name:"Alaska Airlines", color:"#0b4a6f", reviewed:"Bag fees verified vs alaskaair.com · Jun 2026",
+   hubs:"SEA, PDX, ANC, LAX, SAN, SFO, HNL", regional:"Horizon Air, SkyWest",
+   fares:"Saver (basic) · Main · Premium · First. Saver cannot be changed - it must be rebooked entirely.",
+   bags:{carry:"1 carry-on (22 x 14 x 9 in) + personal item, free on every fare.",
+     checked:"1st about $35 ($40 airport) · 2nd $45 · 3rd+ $150. Among the lower fees of the majors. First: 2 free (up to 70 lb).",
+     intl:"Same as domestic; some routes (e.g. SEA-KEF) include 1 free.",
+     free:"Mileage Plan elites, Alaska cardholders, Club 49 members and active military get free checked bags."},
+   over:"51-100 lb: $100 (flat). Oversize 63-115 in: $100. Over 115 in not accepted.",
+   umnr:{ages:"Junior Jetsetters: 5-12 mandatory · 13-17 optional · under 5 not alone.",
+     fee:"Nonstop $50 each way · connecting $75 each way (Alaska hubs only).",
+     book:"Alaska Reservations or chat - not online: 1-800-252-7522.",
+     note:"Connections only via SEA, PDX, ANC, LAX, SAN, SFO. No red-eyes for ages 5-7; no last flight of the day for 5-11."},
+   noshow:"Cancel at least 10 minutes before departure to keep the value as travel credit. Refunds take about 7-20 business days.",
+   pet:{allow:"Cats and dogs in cabin (rabbits & birds no longer accepted on new bookings). One of few majors still flying pets in cargo.",
+     fee:"In-cabin $100 each way (one of the LOWEST among majors). Cargo (Pet Connect) $200 each way.",
+     weight:"In-cabin: pet + carrier under the seat. Cargo: up to 150 lb with kennel.",
+     note:"Up to 2 carriers per passenger (second needs a purchased seat). No snub-nosed pets in cargo."},
+   kennel:"About 17 x 11 x 9.5 in, soft or hard-sided, ventilated. Cargo kennels must be IATA-compliant."},
+
+  {code:"WN", short:"Southwest", name:"Southwest Airlines", color:"#b9332a", reviewed:"Bag fees verified vs southwest.com · Jun 2026",
+   hubs:"MDW, BWI, DEN, DAL, LAS, PHX, HOU, OAK, MCO, BNA, ATL", regional:"None (operates independently)",
+   fares:"Basic · Choice · Choice Preferred · Choice Extra. NOTE: open seating ended Jan 2026 - seats are now assigned.",
+   bags:{carry:"1 carry-on (24 x 16 x 10 in) + personal item - still free on every fare.",
+     checked:"\"Bags Fly Free\" ENDED 28 May 2025. Now 1st $45 · 2nd $55 · 3rd $150 (raised 9 Apr 2026).",
+     intl:"Same fees as domestic.",
+     free:"Choice Extra, A-List Preferred and Business Select still get 2 free; A-List members and Rapid Rewards cardholders get 1 free."},
+   over:"51-70 lb: +$100-$150 · 71-100 lb: +$200 (on top of the bag fee). Oversize 62-80 in: +$200. Max 20 bags per person.",
+   umnr:{ages:"5-11 mandatory UMNR · 12+ Young Traveler (optional) · under 5 not alone.",
+     fee:"$100 per one-way segment (US mainland); $35 each way inter-island Hawaii.",
+     book:"Online, phone (1-800-435-9792) or counter - must request UMNR explicitly.",
+     note:"NONSTOP or DIRECT flights only - no connections. Southwest-operated US flights only; no international."},
+   noshow:"Cancel at least 10 minutes before the original departure or the reservation is cancelled (value is lost on Basic; held as credit on others).",
+   pet:{allow:"Small dogs and cats in cabin only - no cargo, no checked, no international.",
+     fee:"$125 per carrier one-way ($35 inter-island Hawaii). Refundable if the flight is cancelled.",
+     weight:"No strict weight - pet + carrier must fit under the seat.",
+     note:"Max 6 pet carriers per flight. The carrier counts as your personal item or carry-on. ESAs are treated as regular pets."},
+   kennel:"About 18.5 x 13.5 x 9.5 in, soft or hard-sided. Up to 2 same-species pets per carrier."},
+
+  {code:"B6", short:"JetBlue", name:"JetBlue Airways", color:"#0a3d8f", reviewed:"Bag fees verified · Jun 2026",
+   hubs:"JFK, BOS, FLL, MCO", regional:"None",
+   fares:"Blue Basic · Blue · Blue Plus · Blue Extra · Even More · Mint (premium lie-flat).",
+   bags:{carry:"1 carry-on (22 x 14 x 9 in) + personal item.",
+     checked:"1st about $39 (raised Mar 2026; peak-day pricing can add up to ~$9). 2nd about $50. Blue Plus: 1 free. Mint: 2 free.",
+     intl:"1st free transatlantic; otherwise about $60 / $125 / $200.",
+     free:"Blue Plus includes 1; Mint includes 2; Mosaic elites and JetBlue cardholders get free bags."},
+   over:"51-70 lb: +$100-$150 · 71-100 lb: +$200. Oversize 62-80 in: +$200.",
+   umnr:{ages:"5 to under 14 mandatory UMNR · 14+ may fly alone (assistance on request).",
+     fee:"$150 one-way per child (flat). Phone bookings may add $25.",
+     book:"JetBlue.com (UMNR option), phone, or airport counter - book early, limited slots.",
+     note:"NONSTOP only; max 3 UMNRs per flight. Not in Mint or Even More Space. No connecting/codeshare segments."},
+   noshow:"The ticket stays OPEN and is good for one year from issue, or the value goes to an MCO (minus any cancellation fee if booked through the GDS)."  ,
+   pet:{allow:"Small dogs and cats only, in cabin. No cargo.",
+     fee:"$125 each way per pet (flat, all routes).",
+     weight:"Pet + carrier must not exceed 20 lb (9 kg); carrier max 17 x 12.5 x 8.5 in.",
+     note:"Max 6 pets per flight. Carrier counts as your personal item. Not in Mint, exit rows or bulkhead."},
+   kennel:"About 17 x 12.5 x 8.5 in, FAA-approved soft-sided, ventilated. Pet + carrier max 20 lb."},
+
+  {code:"AM", short:"Aeromexico", name:"Aeromexico", color:"#0a2c63", reviewed:"From May 2026 guide — not re-verified, confirm in GDS",
+   hubs:"MEX (Mexico City), GDL (Guadalajara), MTY (Monterrey)", regional:"Aeromexico Connect",
+   fares:"Basic · Classic (Main) · AM Plus · Clase Premier (Business).",
+   bags:{carry:"1 carry-on (max 10 kg) + personal item (Premier 18 kg).",
+     checked:"Basic: not included (about $60-$75 US-Mexico). Classic: 1 free (25 kg / 55 lb). AM Plus: 2 free. Premier: up to 3 free.",
+     intl:"Classic includes 1 free long-haul; higher cabins more.",
+     free:"Aeromexico Rewards Titanium/Platinum/Gold and SkyTeam Elite/Elite Plus get free bags."},
+   over:"23-32 kg (51-70 lb): about $100 intl / 700 MXN domestic. Oversize 158-204 cm: about $150-$250. Over 32 kg / 80 in ships as cargo.",
+   umnr:{ages:"5-11 mandatory · 12-17 optional · under 5 not alone.",
+     fee:"About $100-$150 USD each way per child.",
+     book:"Through the Aeromexico call center only - not online. Advance notice required.",
+     note:"Aeromexico-operated flights; connecting flights need advance approval."},
+   noshow:"Cancel or change before departure to keep the value. The 24-hour rule applies for travel originating in the US/Canada (departure 7+ days away).",
+   pet:{allow:"Small dogs, cats and domestic birds in cabin; larger pets via cargo on most routes.",
+     fee:"In-cabin about $135-$175 USD each way (varies by destination).",
+     weight:"Pet + carrier must not exceed 9 kg / 20 lb in cabin.",
+     note:"One pet per carrier; pet stays in the carrier. Snub-nosed breeds restricted in cargo."},
+   kennel:"Must fit under the seat (soft or hard-sided, ventilated). Cargo kennels IATA-compliant."},
+
+  {code:"AV", short:"Avianca", name:"Avianca", color:"#9e1b32", reviewed:"From May 2026 guide — not re-verified, confirm in GDS",
+   hubs:"BOG (Bogota), SAL (San Salvador), LIM (Lima)", regional:"Avianca Costa Rica / Ecuador / El Salvador",
+   fares:"Basic · Classic (Main) · Flex · Business.",
+   bags:{carry:"1 carry-on (10 kg) + personal item.",
+     checked:"Basic: not included (about $40-$80 by route). Classic: 1 free (23 kg). Flex: 2 free (23 kg). Business: 2 free (32 kg / 70 lb).",
+     intl:"As above by fare; Business 2 free at 32 kg.",
+     free:"LifeMiles Elite (Gold/Platinum/Diamond) and Star Alliance Gold get free bags."},
+   over:"23-32 kg (51-70 lb): $50-$200 · 32-45 kg (71-100 lb): $200+. Oversize over 158 cm: $100-$300.",
+   umnr:{ages:"5-11 mandatory · 12-17 optional · under 5 not alone.",
+     fee:"About $100-$150 USD each way per child.",
+     book:"Avianca contact center only - not online. Advance notice required.",
+     note:"Avianca-operated flights only; connections only via main hubs (BOG, SAL, LIM)."},
+   noshow:"Cancel or change before departure to keep the value. 24-hour rule applies for tickets issued less than 7 days before departure. El Salvador has a special 8-day refund window.",
+   pet:{allow:"Small dogs and cats in cabin; larger pets via cargo. Service animals free.",
+     fee:"In-cabin about $125-$175 USD each way; cargo about $200-$400.",
+     weight:"In-cabin: pet + carrier max 8 kg / 18 lb. Cargo: up to 45 kg / 100 lb.",
+     note:"One pet per carrier; pet stays in the carrier. Snub-nosed breeds restricted in cargo."},
+   kennel:"Must fit under the seat (soft or hard-sided). Cargo kennels IATA-compliant, up to 45 kg."}
+];
+let airActive = "DL";
+function airFind(c){ return AIRLINES.find(a=>a.code===c) || AIRLINES[0]; }
+function airRow(label,val){ return `<div class="air-row"><div class="air-k">${label}</div><div class="air-v">${val}</div></div>`; }
+function airRender(code){
+  const a=airFind(code); airActive=a.code;
+  return `<div class="air-card" id="airCard" style="--ac:${a.color}">
+    <div class="air-head"><div class="air-badge">${a.code}</div>
+      <div class="air-headtext"><h3>${a.name}</h3>
+      <div class="air-sub"><b>Hubs:</b> ${a.hubs}</div>
+      <div class="air-sub"><b>Regional:</b> ${a.regional}</div></div>
+    </div>
+    ${a.reviewed?`<div class="air-stamp">🕓 ${a.reviewed}</div>`:''}
+    <div class="air-fares"><b>Fare bundles —</b> ${a.fares}</div>
+    <div class="air-sec" id="airBags"><h4>🧳 Baggage</h4>
+      ${airRow('Carry-on', a.bags.carry)}${airRow('Checked (domestic)', a.bags.checked)}${airRow('Checked (international)', a.bags.intl)}${airRow('Free-bag exceptions', a.bags.free)}</div>
+    <div class="air-sec" id="airOver"><h4>⚖️ Overweight &amp; oversized</h4><div class="air-note">${a.over}</div></div>
+    <div class="air-sec" id="airUmnr"><h4>👶 Unaccompanied minors</h4>
+      ${airRow('Ages', a.umnr.ages)}${airRow('Fee', a.umnr.fee)}${airRow('Booking', a.umnr.book)}${airRow('Key rules', a.umnr.note)}</div>
+    <div class="air-sec" id="airNoshow"><h4>⏰ No-show</h4><div class="air-note">${a.noshow}</div></div>
+    <div class="air-sec" id="airPet"><h4>🐾 Pets</h4>
+      ${airRow('Allowed', a.pet.allow)}${airRow('Fee', a.pet.fee)}${airRow('Weight', a.pet.weight)}${airRow('Key rules', a.pet.note)}</div>
+    <div class="air-sec" id="airKennel"><h4>📦 Kennel</h4><div class="air-note">${a.kennel}</div></div>
+  </div>`;
+}
+function airSelect(code, fromPresenter){
+  airActive=code;
+  document.querySelectorAll('.air-tab').forEach(b=>b.classList.toggle('active', b.dataset.air===code));
+  const stage=document.getElementById('airStage'); if(stage) stage.innerHTML=airRender(code);
+  if(!fromPresenter){ const t=document.querySelector('.air-tab[data-air="'+code+'"]'); if(t) t.scrollIntoView({block:'nearest',inline:'center'}); }
+}
+function viewAirlines(){
+  return `
+  <h2 class="page-title">Airline Policies</h2>
+  <p class="page-sub">Your quick reference for the 8 carriers we book most — baggage, changes, cancellations, unaccompanied minors and pets. Tap an airline to see its rules.</p>
+  <div class="present-cta"><button class="btn btn-present" id="presentBtn">▶&nbsp; Presenter mode</button><span class="present-hint">A narrated walkthrough of all 8 airlines — turn your sound on.</span></div>
+  <div class="air-verify">✅ <b>Bag fees checked against the airlines' official sites in June 2026.</b> Fees change often — every major US carrier raised them in spring 2026 — so always confirm the live fee in Amadeus before quoting a customer.</div>
+  <div class="air-tabs" id="airTabs">${AIRLINES.map(a=>`<button class="air-tab${a.code===airActive?' active':''}" data-air="${a.code}">${a.code} · ${a.short}</button>`).join('')}</div>
+  <div id="airStage">${airRender(airActive)}</div>
+  ${moduleGateHTML('airlines')}`;
+}
+function initAirlines(){
+  document.querySelectorAll('.air-tab').forEach(b=> b.onclick=()=>airSelect(b.dataset.air));
+  window.__subTab = code => airSelect(code, true);
+  const pbtn=document.getElementById('presentBtn'); if(pbtn) pbtn.onclick=presentAirlines;
+}
+const AIRLINES_BEATS = [
+  {tab:"DL", sel:".air-verify", chapter:"AIRLINE POLICIES · OVERVIEW", dur:10000, cap:"This is your pocket guide to eight airlines. The golden rule first: bag fees change constantly — every US carrier raised them in spring 2026 — so always confirm the live fee in Amadeus before you quote."},
+  {tab:"DL", sel:"#airBags", chapter:"DELTA", dur:12000, cap:"Delta. Carry-on is free on every fare, even Main Basic. Checked bags are now forty-five dollars for the first and fifty-five for the second. Unaccompanied minors are a hundred and fifty dollars, booked by phone only. Pets ride in-cabin for a hundred and fifty."},
+  {tab:"UA", sel:"#airBags", chapter:"UNITED", dur:12000, cap:"United matches Delta at forty-five and fifty-five — but watch this: United Basic Economy gives you a personal item only, no full carry-on. Minors must fly nonstop on United, and two pets means buying a second seat."},
+  {tab:"AA", sel:"#airBags", chapter:"AMERICAN", dur:12000, cap:"American is forty-five online, fifty at the airport — and it's the one airline that charges Basic Economy five dollars more per bag. Carry-on stays free. Pets cap at twenty pounds including the carrier, and not to Hawaii."},
+  {tab:"AS", sel:"#airBags", chapter:"ALASKA", dur:11000, cap:"Alaska is one of the cheaper majors — about thirty-five for the first bag — and one of the few still flying pets in cargo, up to a hundred and fifty pounds. In-cabin pets are just a hundred dollars, the lowest here."},
+  {tab:"WN", sel:"#airBags", chapter:"SOUTHWEST", dur:13000, cap:"Southwest is the big change. Bags Fly Free ended in 2025 — it's now forty-five and fifty-five — and open seating ended in January 2026, so seats are assigned now. Pets and minors are nonstop only; no international."},
+  {tab:"B6", sel:"#airBags", chapter:"JETBLUE", dur:11000, cap:"JetBlue starts around thirty-nine dollars with peak-day pricing, so it varies more than the others. Minors fly nonstop only and never in Mint. A no-showed ticket stays open and is good for a year."},
+  {tab:"AM", sel:"#airBags", chapter:"AEROMEXICO", dur:10000, cap:"Aeromexico — Basic has no free bag, Classic includes one at twenty-five kilos. Minors must be booked through the call center. Pets in cabin run about a hundred and thirty-five to a hundred and seventy-five dollars."},
+  {tab:"AV", sel:"#airBags", chapter:"AVIANCA", dur:11000, cap:"Avianca is similar — Basic has no bag, Classic includes one at twenty-three kilos. Remember El Salvador's special eight-day refund window. Minors book through the contact center, connecting only through Bogota, San Salvador or Lima."},
+];
+function presentAirlines(){
+  curBeats=AIRLINES_BEATS; curPrefix='airlines';
+  curIntro={eyebrow:'CTD ACADEMY · MODULE 08', title:'Airline Policies', sub:'Bags, changes, minors and pets — 8 carriers'};
+  curOutro={eyebrow:'MODULE 08 COMPLETE', title:'Your pocket policy guide.', sub:'When in doubt, confirm the live fee in Amadeus'};
+  startPresent();
+}
+
 const VIEWS = {
   dash:viewDash, company:viewCompany, leaves:viewLeaves, iata:viewIata,
   amadeus:viewAmadeus, process:viewProcess, sales:viewSales, verify:viewVerify,
-  exam:viewExam, cert:viewCert, roleplay:viewRoleplay, admin:viewAdmin
+  exam:viewExam, cert:viewCert, roleplay:viewRoleplay, admin:viewAdmin, glossary:viewGlossary, airlines:viewAirlines
 };
 
 /* ============================================================
@@ -3779,7 +4221,7 @@ function go(view){
   content.innerHTML = VIEWS[view]();
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
   const m = MODULES.find(x=>x.id===view);
-  const SPECIAL={exam:'Final Exam',cert:'Certificate',roleplay:'Roleplay Call',admin:'Trainer Dashboard'};
+  const SPECIAL={exam:'Final Exam',cert:'Certificate',roleplay:'Roleplay Call',admin:'Trainer Dashboard',glossary:'Glossary'};
   document.getElementById('crumb').textContent = m ? m.title : (SPECIAL[view]||'Dashboard');
   document.getElementById('side').classList.remove('open');
   window.scrollTo(0,0);
@@ -3790,10 +4232,16 @@ function go(view){
   if(view==='verify') initVerify();
   if(view==='amadeus') initAmadeus();
   if(view==='process') initProcess();
+  if(view==='airlines') initAirlines();
   if(view==='exam') initExam();
   if(view==='roleplay') initRoleplay();
   if(view==='admin') initAdmin();
-  if(MODULES.find(x=>x.id===view)) initModuleGate(view);
+  if(view==='glossary') initGlossary();
+  if(MODULES.find(x=>x.id===view)){
+    const host = content.querySelector('.page-sub') || content.querySelector('.page-title');
+    if(host && !content.querySelector('.mod-goals')) host.insertAdjacentHTML('afterend', moduleGoalsHTML(view));
+    initModuleGate(view);
+  }
   refreshNavState();
 }
 function refreshNavState(){
