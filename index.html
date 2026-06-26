@@ -827,6 +827,55 @@
   .subtab.hot:hover{background:rgba(240,165,0,.22)}
   .subtab.hot.active{background:var(--amber);color:#0E1B2C;border-color:var(--amber)}
   @media(max-width:560px){.pb-promo-go{display:none}}
+  /* US time zones */
+  .tz-found{border:1px solid var(--line);border-left:4px solid var(--zc,#888);border-radius:11px;padding:12px 15px;margin-bottom:10px;background:var(--card);box-shadow:var(--shadow)}
+  .tz-found.empty{border-left-color:var(--line);color:var(--muted);font-size:14px}
+  .tz-found-main b{font-size:16px;color:#1c2b3d}
+  .tz-found-cap{font-size:13px;color:var(--muted);margin-left:6px}
+  .tz-found-zone{font-size:13px;color:#41505f;margin-top:4px}
+  .tz-found-zone span{font-family:var(--mono);color:var(--navy)}
+  .tz-map{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+  .tz-map.alt-row{grid-template-columns:repeat(2,1fr);max-width:50%}
+  .tz-col{border:1px solid var(--line);border-top:3px solid var(--zc);border-radius:12px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+  .tz-col-h{padding:11px 13px;background:var(--zc);color:#fff}
+  .tz-col-name{font-family:var(--disp);font-weight:600;font-size:14px}
+  .tz-col-time{font-family:var(--mono);font-size:13px;opacity:.95;margin-top:2px}
+  .tz-chips{padding:11px 12px;display:flex;flex-wrap:wrap;gap:5px}
+  .tz-chip{font-family:var(--mono);font-size:11.5px;font-weight:600;background:#f3f6fa;border:1px solid var(--line);border-radius:6px;padding:3px 7px;color:#41505f}
+  .tz-chip i{color:var(--amber);font-style:normal}
+  .tz-tables{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .tz-table{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+  .tz-table-h{padding:10px 14px;background:var(--zc);color:#fff;font-family:var(--disp);font-weight:600;font-size:13.5px}
+  .tz-table-h span{font-family:var(--mono);font-weight:400;font-size:12.5px;opacity:.95}
+  .tz-row{display:flex;justify-content:space-between;gap:12px;padding:8px 14px;border-top:1px solid #eef2f6;font-size:13.5px}
+  .tz-st{color:#1c2b3d;font-weight:500}
+  .tz-star{color:var(--amber);font-style:normal;cursor:help}
+  .tz-cap{color:var(--muted)}
+  .tz-legend{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+  .tz-leg{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:9px;padding:7px 11px;cursor:pointer;background:var(--card);transition:.15s;box-shadow:var(--shadow)}
+  .tz-leg:hover{border-color:var(--zc);transform:translateY(-1px)}
+  .tz-leg-dot{width:12px;height:12px;border-radius:3px;background:var(--zc)}
+  .tz-leg-name{font-weight:600;font-size:12.5px;color:#1c2b3d}
+  .tz-leg-time{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+  .usmap-wrap{display:flex;gap:16px;align-items:stretch}
+  .usmap-box{flex:1;min-width:0;background:linear-gradient(180deg,#fbfdff,#f3f7fb);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:12px;display:flex;align-items:center;justify-content:center}
+  .usmap-host{width:100%}
+  .usmap-svg{width:100%;height:auto;display:block}
+  .usmap-loading,.usmap-fallback{padding:60px 20px;text-align:center;color:var(--muted);font-size:14px}
+  .usmap-state{cursor:pointer;transition:opacity .2s}
+  .usmap-abbr{font-family:var(--disp);font-size:11px;font-weight:600;fill:#fff;text-anchor:middle;dominant-baseline:middle;pointer-events:none;paint-order:stroke;stroke:rgba(14,27,44,.28);stroke-width:2px}
+  .usmap-cap{fill:#fff;stroke:#0E1B2C;stroke-width:1.1;cursor:pointer}
+  .usmap-info{width:236px;flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;display:flex;align-items:center;justify-content:center;text-align:center}
+  .umi-empty{color:var(--muted);font-size:13.5px;line-height:1.5}
+  .umi-card{width:100%;border-top:3px solid var(--zc);margin-top:-18px;padding-top:18px}
+  .umi-state{font-family:var(--disp);font-size:20px;font-weight:600;color:#1c2b3d;margin-bottom:6px}
+  .umi-cap{font-size:13px;color:#41505f;margin-bottom:12px}
+  .umi-cap b{color:#1c2b3d}
+  .umi-zone{display:inline-block;background:var(--zc);color:#fff;font-size:11.5px;font-weight:600;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+  .umi-time{font-family:var(--disp);font-size:30px;font-weight:600;color:var(--navy);line-height:1}
+  .umi-sub{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-top:3px}
+  .umi-note{font-size:11.5px;color:#8a5b00;background:rgba(240,165,0,.1);border-radius:7px;padding:6px 9px;margin-top:10px;line-height:1.4}
+  @media(max-width:760px){.tz-map{grid-template-columns:repeat(2,1fr)}.tz-map.alt-row{max-width:100%}.tz-tables{grid-template-columns:1fr}.usmap-wrap{flex-direction:column}.usmap-info{width:auto}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -850,6 +899,7 @@
       <div class="nav-item" data-view="cert"><span class="nav-num">✦</span><span class="nav-ico">🏆</span>Certificate</div>
       <div class="nav-label">Reference</div>
       <div class="nav-item" data-view="glossary"><span class="nav-num">≡</span><span class="nav-ico">📖</span>Glossary</div>
+      <div class="nav-item" data-view="ustime"><span class="nav-num">◷</span><span class="nav-ico">🗺️</span>US Time Zones</div>
     </nav>
     <div class="side-foot" id="sideFoot">Signed in as <b>New Agent</b><br>Add your name on the dashboard</div>
   </aside>
@@ -3599,6 +3649,10 @@ const EXAM_POOL = [
   {m:"IATA", q:"A passenger booked to \"Charleston\" is going to West Virginia. Which code?", opts:["CRW","CHS","CLT","CAE"], a:0},
   {m:"IATA", q:"Which pair are BOTH airports in the SAME metro area?", opts:["DCA and IAD (Washington)","SJC and SJO","BHM and BHX","NAP and APF"], a:0},
 
+  {m:"IATA", q:"A flight leaves New York at 9:00 AM Eastern for Los Angeles. Pacific time is…", opts:["3 hours behind Eastern","3 hours ahead of Eastern","The same as Eastern","1 hour behind Eastern"], a:0},
+  {m:"IATA", q:"Which two US states do NOT observe daylight saving time?", opts:["Arizona and Hawaii","Texas and Florida","California and Nevada","Alaska and Maine"], a:0},
+  {m:"IATA", q:"Chicago is in which US time zone?", opts:["Central","Eastern","Mountain","Pacific"], a:0},
+
   {m:"Leave", q:"To choose your own week-off day, how much notice is needed?", opts:["At least one week","One day","No notice","One month"], a:0},
   {m:"Leave", q:"Which of these costs you a day's pay?", opts:["UL — unplanned leave","An approved CL","An approved week-off","A public holiday"], a:0},
 
@@ -4158,6 +4212,182 @@ function moduleGoalsHTML(id){
 const VIEWS_GOALS_MARKER = true;
 
 /* ============================================================
+   US TIME ZONES · STATES · CAPITALS  (live reference)
+   ============================================================ */
+const TZ = {
+  ET:{name:"Eastern", iana:"America/New_York", color:"#1f6f54"},
+  CT:{name:"Central", iana:"America/Chicago", color:"#b07b1e"},
+  MT:{name:"Mountain", iana:"America/Denver", color:"#9e4e2a"},
+  PT:{name:"Pacific", iana:"America/Los_Angeles", color:"#2a5a9e"},
+  AKT:{name:"Alaska", iana:"America/Anchorage", color:"#5a4e8e"},
+  HT:{name:"Hawaii", iana:"Pacific/Honolulu", color:"#1f7f8e"}
+};
+const US_STATES = [
+  {s:"AL", n:"Alabama", cap:"Montgomery", z:"CT", ll:[32.377,-86.3]},
+  {s:"AK", n:"Alaska", cap:"Juneau", z:"AKT", ll:[58.302,-134.42]},
+  {s:"AZ", n:"Arizona", cap:"Phoenix", z:"MT", iana:"America/Phoenix", note:"No daylight saving — stays on MST year-round", ll:[33.448,-112.073]},
+  {s:"AR", n:"Arkansas", cap:"Little Rock", z:"CT", ll:[34.746,-92.29]},
+  {s:"CA", n:"California", cap:"Sacramento", z:"PT", ll:[38.576,-121.494]},
+  {s:"CO", n:"Colorado", cap:"Denver", z:"MT", ll:[39.739,-104.984]},
+  {s:"CT", n:"Connecticut", cap:"Hartford", z:"ET", ll:[41.764,-72.682]},
+  {s:"DE", n:"Delaware", cap:"Dover", z:"ET", ll:[39.158,-75.524]},
+  {s:"FL", n:"Florida", cap:"Tallahassee", z:"ET", split:"The panhandle (Pensacola) is Central", ll:[30.438,-84.281]},
+  {s:"GA", n:"Georgia", cap:"Atlanta", z:"ET", ll:[33.749,-84.388]},
+  {s:"HI", n:"Hawaii", cap:"Honolulu", z:"HT", note:"No daylight saving", ll:[21.307,-157.858]},
+  {s:"ID", n:"Idaho", cap:"Boise", z:"MT", split:"The northern panhandle is Pacific", ll:[43.617,-116.2]},
+  {s:"IL", n:"Illinois", cap:"Springfield", z:"CT", ll:[39.798,-89.654]},
+  {s:"IN", n:"Indiana", cap:"Indianapolis", z:"ET", split:"NW & SW corners are Central", ll:[39.768,-86.158]},
+  {s:"IA", n:"Iowa", cap:"Des Moines", z:"CT", ll:[41.591,-93.604]},
+  {s:"KS", n:"Kansas", cap:"Topeka", z:"CT", split:"Four western counties are Mountain", ll:[39.048,-95.678]},
+  {s:"KY", n:"Kentucky", cap:"Frankfort", z:"ET", split:"The western half is Central", ll:[38.197,-84.863]},
+  {s:"LA", n:"Louisiana", cap:"Baton Rouge", z:"CT", ll:[30.457,-91.187]},
+  {s:"ME", n:"Maine", cap:"Augusta", z:"ET", ll:[44.307,-69.782]},
+  {s:"MD", n:"Maryland", cap:"Annapolis", z:"ET", ll:[38.979,-76.492]},
+  {s:"MA", n:"Massachusetts", cap:"Boston", z:"ET", ll:[42.358,-71.064]},
+  {s:"MI", n:"Michigan", cap:"Lansing", z:"ET", split:"Four western U.P. counties are Central", ll:[42.733,-84.556]},
+  {s:"MN", n:"Minnesota", cap:"Saint Paul", z:"CT", ll:[44.954,-93.094]},
+  {s:"MS", n:"Mississippi", cap:"Jackson", z:"CT", ll:[32.298,-90.185]},
+  {s:"MO", n:"Missouri", cap:"Jefferson City", z:"CT", ll:[38.579,-92.173]},
+  {s:"MT", n:"Montana", cap:"Helena", z:"MT", ll:[46.586,-112.018]},
+  {s:"NE", n:"Nebraska", cap:"Lincoln", z:"CT", split:"The panhandle is Mountain", ll:[40.808,-96.7]},
+  {s:"NV", n:"Nevada", cap:"Carson City", z:"PT", split:"West Wendover is Mountain", ll:[39.164,-119.766]},
+  {s:"NH", n:"New Hampshire", cap:"Concord", z:"ET", ll:[43.207,-71.538]},
+  {s:"NJ", n:"New Jersey", cap:"Trenton", z:"ET", ll:[40.22,-74.77]},
+  {s:"NM", n:"New Mexico", cap:"Santa Fe", z:"MT", ll:[35.682,-105.94]},
+  {s:"NY", n:"New York", cap:"Albany", z:"ET", ll:[42.652,-73.757]},
+  {s:"NC", n:"North Carolina", cap:"Raleigh", z:"ET", ll:[35.78,-78.639]},
+  {s:"ND", n:"North Dakota", cap:"Bismarck", z:"CT", split:"The southwest is Mountain", ll:[46.821,-100.783]},
+  {s:"OH", n:"Ohio", cap:"Columbus", z:"ET", ll:[39.961,-82.999]},
+  {s:"OK", n:"Oklahoma", cap:"Oklahoma City", z:"CT", ll:[35.468,-97.516]},
+  {s:"OR", n:"Oregon", cap:"Salem", z:"PT", split:"Most of Malheur County is Mountain", ll:[44.939,-123.035]},
+  {s:"PA", n:"Pennsylvania", cap:"Harrisburg", z:"ET", ll:[40.264,-76.883]},
+  {s:"RI", n:"Rhode Island", cap:"Providence", z:"ET", ll:[41.831,-71.415]},
+  {s:"SC", n:"South Carolina", cap:"Columbia", z:"ET", ll:[34.0,-81.035]},
+  {s:"SD", n:"South Dakota", cap:"Pierre", z:"CT", split:"The western half is Mountain", ll:[44.367,-100.351]},
+  {s:"TN", n:"Tennessee", cap:"Nashville", z:"CT", split:"The eastern third is Eastern", ll:[36.163,-86.781]},
+  {s:"TX", n:"Texas", cap:"Austin", z:"CT", split:"The El Paso area is Mountain", ll:[30.267,-97.743]},
+  {s:"UT", n:"Utah", cap:"Salt Lake City", z:"MT", ll:[40.761,-111.891]},
+  {s:"VT", n:"Vermont", cap:"Montpelier", z:"ET", ll:[44.262,-72.581]},
+  {s:"VA", n:"Virginia", cap:"Richmond", z:"ET", ll:[37.541,-77.436]},
+  {s:"WA", n:"Washington", cap:"Olympia", z:"PT", ll:[47.038,-122.901]},
+  {s:"WV", n:"West Virginia", cap:"Charleston", z:"ET", ll:[38.336,-81.612]},
+  {s:"WI", n:"Wisconsin", cap:"Madison", z:"CT", ll:[43.073,-89.401]},
+  {s:"WY", n:"Wyoming", cap:"Cheyenne", z:"MT", ll:[41.14,-104.82]},
+  {s:"DC", n:"Washington, D.C.", cap:"(federal district)", z:"ET", ll:[38.895,-77.037]}
+];
+function tzFmt(iana){ try{ return new Intl.DateTimeFormat('en-US',{timeZone:iana,hour:'numeric',minute:'2-digit',hour12:true}).format(new Date()); }catch(e){ return '—'; } }
+function tzTick(){
+  Object.keys(TZ).forEach(z=>{ const t=tzFmt(TZ[z].iana);
+    const a=document.getElementById('clk-'+z); if(a) a.textContent=t;
+    const b=document.getElementById('clkt-'+z); if(b) b.textContent=t; });
+}
+function viewUSTime(){
+  const legend = ['ET','CT','MT','PT','AKT','HT'].map(z=>
+    `<div class="tz-leg" style="--zc:${TZ[z].color}" onclick="tzHighlight('${z}')"><span class="tz-leg-dot"></span><span class="tz-leg-name">${TZ[z].name}</span><span class="tz-leg-time" id="clk-${z}">—</span></div>`
+  ).join('');
+  const tables = ['ET','CT','MT','PT','AKT','HT'].map(z=>{
+    const list=US_STATES.filter(x=>x.z===z).sort((a,b)=>a.n.localeCompare(b.n));
+    return `<div class="tz-table"><div class="tz-table-h" style="--zc:${TZ[z].color}">${TZ[z].name} Time — <span id="clkt-${z}">—</span></div>
+      ${list.map(x=>`<div class="tz-row"><span class="tz-st">${x.n}${x.split?' <i class="tz-star" title="'+escAttr(x.split)+'">★</i>':''}${x.note?' <i class="tz-star" title="'+escAttr(x.note)+'">☀</i>':''}</span><span class="tz-cap">${x.cap}</span></div>`).join('')}</div>`;
+  }).join('');
+  return `
+  <h2 class="page-title">US Time Zones, States &amp; Capitals</h2>
+  <p class="page-sub">A live, interactive map for quoting flight times and calling customers — hover any state to see its capital, time zone and the current local time. <b>★</b> = the state spans more than one zone; <b>☀</b> = it doesn't change for daylight saving.</p>
+  <div class="tz-legend">${legend}</div>
+  <div class="usmap-wrap">
+    <div class="usmap-box"><div id="usmapWrap" class="usmap-host"><div class="usmap-loading">Loading map…</div></div></div>
+    <div class="usmap-info" id="usmapInfo"><div class="umi-empty">🗺️ Hover or tap a state to see its capital, zone and current local time.</div></div>
+  </div>
+  <input id="tzSearch" class="gl-search" placeholder="Or look up a state / capital (e.g. Texas, Ohio, Boston)…" oninput="tzSearch(this.value)" autocomplete="off" style="margin-top:16px">
+  <div id="tzResult"></div>
+  <div class="note"><span>⏰</span><div>US time zones run as bands from <b>Pacific</b> in the west to <b>Eastern</b> in the east, each one hour apart (Pacific is 3 hours behind Eastern). <b>Arizona</b> and <b>Hawaii</b> don't observe daylight saving, so their gap to the others shifts for part of the year. When booking, always quote each flight in the <b>local time of that airport</b>.</div></div>
+  <h3 class="sec">Every state &amp; capital, by zone</h3>
+  <div class="tz-tables">${tables}</div>`;
+}
+function loadScriptOnce(src){ return new Promise((res,rej)=>{ if(document.querySelector('script[data-src="'+src+'"]')){ res(); return; } const s=document.createElement('script'); s.src=src; s.dataset.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+let _usMapDrawn=false, _usMapData=null;
+function usName(n){ return (n||'').toLowerCase().replace(/\./g,'').replace(/\s+/g,' ').trim(); }
+function usLookup(name){
+  const k=usName(name);
+  if(k==='district of columbia') return US_STATES.find(x=>x.s==='DC');
+  return US_STATES.find(x=>usName(x.n)===k);
+}
+async function drawUSMap(){
+  const host=document.getElementById('usmapWrap'); if(!host) return;
+  try{
+    await loadScriptOnce('https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js');
+    await loadScriptOnce('https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js');
+    if(!_usMapData){ const r=await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json'); _usMapData=await r.json(); }
+    const us=_usMapData;
+    const states=topojson.feature(us, us.objects.states);
+    const W=975,H=610;
+    host.innerHTML='';
+    const svg=d3.create('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('class','usmap-svg').attr('preserveAspectRatio','xMidYMid meet');
+    const proj=d3.geoAlbersUsa().fitSize([W,H], states);
+    const path=d3.geoPath(proj);
+    const gStates=svg.append('g');
+    gStates.selectAll('path').data(states.features).join('path')
+      .attr('d',path)
+      .attr('fill',d=>{ const st=usLookup(d.properties.name); return st?TZ[st.z].color:'#cbd5e1'; })
+      .attr('stroke','#ffffff').attr('stroke-width',0.8)
+      .attr('class','usmap-state')
+      .attr('data-name',d=>d.properties.name)
+      .on('mouseover',function(e,d){ d3.select(this).raise().attr('stroke','#0E1B2C').attr('stroke-width',1.6); usShowDetail(d.properties.name); })
+      .on('mouseout',function(){ d3.select(this).attr('stroke','#ffffff').attr('stroke-width',0.8); })
+      .on('click',function(e,d){ usShowDetail(d.properties.name); });
+    // state abbreviation labels for larger states
+    const gLab=svg.append('g').attr('class','usmap-labels');
+    states.features.forEach(d=>{
+      const st=usLookup(d.properties.name); if(!st) return;
+      const c=path.centroid(d); if(!c||isNaN(c[0])) return;
+      const area=path.area(d);
+      if(area>520){ gLab.append('text').attr('x',c[0]).attr('y',c[1]).attr('class','usmap-abbr').text(st.s); }
+    });
+    // capital markers
+    const gCap=svg.append('g');
+    gCap.selectAll('circle').data(US_STATES.filter(x=>x.ll)).join('circle')
+      .attr('transform',d=>{ const p=proj([d.ll[1],d.ll[0]]); return p?`translate(${p[0]},${p[1]})`:'translate(-99,-99)'; })
+      .attr('r',2.8).attr('class','usmap-cap')
+      .on('mouseover',(e,d)=>usShowDetail(d.n));
+    host.appendChild(svg.node());
+    _usMapDrawn=true;
+  }catch(err){
+    host.innerHTML=`<div class="usmap-fallback"><b>Map needs an internet connection to load.</b> You can still use the search box and the full state-by-zone tables below.</div>`;
+  }
+}
+function usShowDetail(name){
+  const st=usLookup(name); const box=document.getElementById('usmapInfo'); if(!box||!st) return;
+  box.innerHTML=`<div class="umi-card" style="--zc:${TZ[st.z].color}">
+    <div class="umi-state">${escHtml(st.n)}</div>
+    <div class="umi-cap">★ Capital: <b>${escHtml(st.cap)}</b></div>
+    <div class="umi-zone">${TZ[st.z].name} Time</div>
+    <div class="umi-time" id="umiTime">${tzFmt(st.iana||TZ[st.z].iana)}</div>
+    <div class="umi-sub">local time right now</div>
+    ${st.split?`<div class="umi-note">★ ${escHtml(st.split)}</div>`:''}
+    ${st.note?`<div class="umi-note">☀ ${escHtml(st.note)}</div>`:''}
+  </div>`;
+}
+function tzHighlight(z){
+  document.querySelectorAll('.usmap-state').forEach(p=>{
+    const st=usLookup(p.getAttribute('data-name'));
+    p.style.opacity = (st && st.z===z)?'1':'0.25';
+  });
+  setTimeout(()=>document.querySelectorAll('.usmap-state').forEach(p=>p.style.opacity='1'), 1800);
+}
+function initUSTime(){ tzTick(); if(window._tzTimer) clearInterval(window._tzTimer); window._tzTimer=setInterval(tzTick, 10000); tzSearch(''); drawUSMap(); }
+function tzSearch(q){
+  const box=document.getElementById('tzResult'); if(!box) return;
+  q=(q||'').trim().toLowerCase();
+  if(!q){ box.innerHTML=''; return; }
+  const hits=US_STATES.filter(x=>x.n.toLowerCase().includes(q)||x.s.toLowerCase()===q||x.cap.toLowerCase().includes(q));
+  if(!hits.length){ box.innerHTML=`<div class="tz-found empty">No state matches “${escHtml(q)}”.</div>`; return; }
+  box.innerHTML=hits.slice(0,5).map(x=>`<div class="tz-found" style="--zc:${TZ[x.z].color}">
+    <div class="tz-found-main"><b>${escHtml(x.n)}</b> <span class="tz-found-cap">capital: ${escHtml(x.cap)}</span></div>
+    <div class="tz-found-zone"><b>${TZ[x.z].name} Time</b> · <span>${tzFmt(x.iana||TZ[x.z].iana)}</span> right now${x.split?' · ★ '+escHtml(x.split):''}${x.note?' · ☀ '+escHtml(x.note):''}</div>
+  </div>`).join('');
+}
+
+/* ============================================================
    LOOK-ALIKE AIRPORTS — same/similar names, different codes
    ============================================================ */
 const CONFUSE_DIFF = [
@@ -4433,7 +4663,7 @@ function presentAirlines(){
 const VIEWS = {
   dash:viewDash, company:viewCompany, leaves:viewLeaves, iata:viewIata,
   amadeus:viewAmadeus, process:viewProcess, sales:viewSales, verify:viewVerify,
-  exam:viewExam, cert:viewCert, roleplay:viewRoleplay, admin:viewAdmin, glossary:viewGlossary, airlines:viewAirlines
+  exam:viewExam, cert:viewCert, roleplay:viewRoleplay, admin:viewAdmin, glossary:viewGlossary, airlines:viewAirlines, ustime:viewUSTime
 };
 
 /* ============================================================
@@ -4450,7 +4680,7 @@ function go(view){
   content.innerHTML = VIEWS[view]();
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.view===view));
   const m = MODULES.find(x=>x.id===view);
-  const SPECIAL={exam:'Final Exam',cert:'Certificate',roleplay:'Roleplay Call',admin:'Trainer Dashboard',glossary:'Glossary'};
+  const SPECIAL={exam:'Final Exam',cert:'Certificate',roleplay:'Roleplay Call',admin:'Trainer Dashboard',glossary:'Glossary',ustime:'US Time Zones'};
   document.getElementById('crumb').textContent = m ? m.title : (SPECIAL[view]||'Dashboard');
   document.getElementById('side').classList.remove('open');
   window.scrollTo(0,0);
@@ -4466,6 +4696,7 @@ function go(view){
   if(view==='roleplay') initRoleplay();
   if(view==='admin') initAdmin();
   if(view==='glossary') initGlossary();
+  if(view==='ustime') initUSTime();
   if(MODULES.find(x=>x.id===view)){
     const host = content.querySelector('.page-sub') || content.querySelector('.page-title');
     if(host && !content.querySelector('.mod-goals')) host.insertAdjacentHTML('afterend', moduleGoalsHTML(view));
