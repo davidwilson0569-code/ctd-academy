@@ -206,6 +206,7 @@
   .ic-name{flex:1;min-width:0}
   .ic-name .city{font-family:var(--disp);font-size:14.5px;font-weight:600;line-height:1.2}
   .ic-name .air{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ic-name .ic-state{font-size:11px;color:#8a5b00;background:rgba(240,165,0,.1);display:inline-block;padding:1px 7px;border-radius:20px;margin-top:4px;font-weight:600}
   .ic-flag{font-size:18px}
   .ic-actions{display:flex;gap:8px}
   .ic-actions-col{display:flex;flex-direction:column;gap:8px;margin-top:6px}
@@ -4755,7 +4756,7 @@ function iataCardHTML(a){
     <div class="iata-card">
       <div class="ic-top">
         <div class="code">${a.c}</div>
-        <div class="ic-name"><div class="city">${a.city} <span class="ic-flag">${a.flag}</span></div><div class="air">${a.air}</div></div>
+        <div class="ic-name"><div class="city">${a.city} <span class="ic-flag">${a.flag}</span></div><div class="air">${a.air}</div>${a.st?`<div class="ic-state">📍 ${a.st}</div>`:''}</div>
       </div>
       <div class="ic-actions-col">
         <button class="mini listen" data-say="${escAttr(a.say)}" data-code="${a.c}">🔊 Hear it <span class="ph">${a.phon}</span></button>
@@ -4770,7 +4771,7 @@ function iataCardHTML(a){
 function renderIata(){
   const q = (document.getElementById('iataSearch')?.value||'').trim().toLowerCase();
   let data = regionData();
-  if(q) data = allIata().filter(a=>a.c.toLowerCase().includes(q)||a.city.toLowerCase().includes(q)||a.air.toLowerCase().includes(q));
+  if(q) data = allIata().filter(a=>a.c.toLowerCase().includes(q)||a.city.toLowerCase().includes(q)||a.air.toLowerCase().includes(q)||(a.st&&a.st.toLowerCase().includes(q)));
   const grid = document.getElementById('iataGrid');
   if(!data.length){ grid.innerHTML = `<div class="placeholder" style="grid-column:1/-1">No match for "<b>${q}</b>". Try a 3-letter code or city name.</div>`; return; }
   if(!q && GROUPED_REGIONS.has(activeRegion)){
