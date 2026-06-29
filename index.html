@@ -207,6 +207,17 @@
   .ic-name .city{font-family:var(--disp);font-size:14.5px;font-weight:600;line-height:1.2}
   .ic-name .air{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ic-name .ic-state{font-size:11px;color:#8a5b00;background:rgba(240,165,0,.1);display:inline-block;padding:1px 7px;border-radius:20px;margin-top:4px;font-weight:600}
+  .iax-rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+  .iax-rtab{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 14px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:5px;box-shadow:var(--shadow)}
+  .iax-rtab:hover{border-color:var(--amber);transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+  .iax-rtab.primary{border-color:var(--amber);background:rgba(240,165,0,.06)}
+  .iax-rtab.done{border-color:rgba(47,179,126,.5);background:rgba(47,179,126,.05)}
+  .iax-rtab-top{display:flex;justify-content:space-between;align-items:center}
+  .iax-rtab-name{font-family:var(--disp);font-weight:600;font-size:14.5px;color:#1c2b3d}
+  .iax-rtab-tick{color:var(--go);font-weight:700}
+  .iax-rtab-meta{font-size:11.5px;color:var(--muted)}
+  .iax-done{margin-top:14px;background:rgba(47,179,126,.08);border:1px solid rgba(47,179,126,.3);border-radius:10px;padding:11px 14px;font-size:13.5px;color:#1c5c43}
+  @media(max-width:620px){.iax-rgrid{grid-template-columns:repeat(2,1fr)}}
   .ic-flag{font-size:18px}
   .ic-actions{display:flex;gap:8px}
   .ic-actions-col{display:flex;flex-direction:column;gap:8px;margin-top:6px}
@@ -956,7 +967,8 @@ function genId(){ try{ return crypto.randomUUID(); }catch(e){ return 'a'+Date.no
 let agentId = _saved.agentId || genId();
 let examSession = _saved.examSession || null;
 let iaxSession = _saved.iaxSession || null;
-function persist(){ saveStore({progress, name:agentName, examBest, examPassed, agentId, examSession, iaxSession}); syncAgent(); }
+let iaxRegionsBest = _saved.iaxRegionsBest || {};
+function persist(){ saveStore({progress, name:agentName, examBest, examPassed, agentId, examSession, iaxSession, iaxRegionsBest}); syncAgent(); }
 function initials(n){ n=(n||'').trim(); if(!n) return 'NA'; const p=n.split(/\s+/); return ((p[0][0]||'')+(p[1]?p[1][0]:'')).toUpperCase(); }
 function setName(v){ agentName=v; persist(); refreshIdentity(); }
 function refreshIdentity(){
@@ -4059,43 +4071,70 @@ const IAX_N = 100, IAX_PASS = 85;
 let iax=null;
 function jsq(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function iaxAirports(){ const out=[]; Object.keys(IATA).forEach(rk=>{ (IATA[rk]||[]).forEach(a=>{ if(a.st && a.say && a.c) out.push(Object.assign({rk},a)); }); }); return out; }
+const IAX_REGIONS=[
+  {id:'us',label:'United States'},
+  {id:'ca',label:'Canada'},
+  {id:'carib',label:'Caribbean'},
+  {id:'camer',label:'Mexico & C. America'},
+  {id:'sa',label:'South America'},
+  {id:'eu',label:'Europe'},
+  {id:'me',label:'Middle East'},
+  {id:'asia',label:'Asia'},
+  {id:'af',label:'Africa'}
+];
+function iaxRegionLabel(id){ const r=IAX_REGIONS.find(x=>x.id===id); return r?r.label:''; }
+function iaxRegionPool(rid){ return (IATA[rid]||[]).filter(a=>a.st&&a.say&&a.c).map(a=>Object.assign({rk:rid},a)); }
+function iaxAllPool(){ const out=[]; IAX_REGIONS.forEach(r=>{ out.push.apply(out, iaxRegionPool(r.id)); }); return out; }
+function iaxBackToRegions(){ const box=document.getElementById('gateBox'); if(box) iaxIntro(box); }
 function iaxIntro(box){
-  if(progress.iata>=100){
-    const nxt=nextModuleId('iata');
-    box.innerHTML=`<div class="gate-result pass"><div class="gr-score">✓</div><h4>Airport test passed</h4><p>You've completed the IATA module. Retake the test, or move on.</p><button class="btn btn-primary" onclick="iaxStart()">Retake the ${IAX_N}-question test</button>${nxt?`<button class="btn btn-ghost" onclick="go('${nxt}')">Next module →</button>`:''}</div>`;
-    return;
-  }
+  let resume='';
   if(iaxSession && iaxSession.qs && iaxSession.qs.length && iaxSession.i < iaxSession.qs.length){
-    const at=iaxSession.i+1, tot=iaxSession.qs.length;
-    box.innerHTML=`<div class="gate-intro"><p><b>⏸️ You have the airport test in progress</b> — you were on airport <b>${at} of ${tot}</b> (score so far ${iaxSession.correct||0}). Pick up where you left off, or start fresh.</p><button class="btn btn-primary" onclick="iaxResume()">Resume (airport ${at}) →</button> <button class="btn btn-ghost" onclick="iaxFresh()">Start over</button></div>`;
-    return;
+    const at=iaxSession.i+1, tot=iaxSession.qs.length, rl=iaxRegionLabel(iaxSession.region||'us');
+    resume=`<div class="gate-intro" style="border-left-color:var(--amber);margin-bottom:14px"><p><b>⏸️ ${rl} test in progress</b> — airport <b>${at} of ${tot}</b> (score so far ${iaxSession.correct||0}). Pick up where you left off, or discard it.</p><button class="btn btn-primary" onclick="iaxResume()">Resume →</button> <button class="btn btn-ghost" onclick="iaxFresh()">Discard</button></div>`;
   }
-  box.innerHTML=`<div class="gate-intro"><p><b>Airport Test — ${IAX_N} questions. You must pass this to complete the module.</b><br>For each airport code you'll: <b>(1)</b> say the airport name out loud (tap 🎤 Say it to check yourself), and <b>(2)</b> choose its state / province / country. Score <b>${IAX_PASS}%</b> or higher. You can stop and resume anytime. Unlimited tries.</p><button class="btn btn-primary" onclick="iaxStart()">Start the airport test →</button></div>`;
+  const cards = IAX_REGIONS.map(r=>{
+    const n=Math.min(IAX_N, iaxRegionPool(r.id).length);
+    const best=iaxRegionsBest[r.id]||0, passed=best>=IAX_PASS;
+    return `<button class="iax-rtab${passed?' done':''}${r.id==='us'?' primary':''}" onclick="iaxStart('${r.id}')">
+      <span class="iax-rtab-top"><span class="iax-rtab-name">${r.label}</span>${passed?'<span class="iax-rtab-tick">✓</span>':''}</span>
+      <span class="iax-rtab-meta">${n} question${n===1?'':'s'}${best?` · best ${best}%`:''}${r.id==='us'?' · start here':''}</span>
+    </button>`;
+  }).join('');
+  const done = progress.iata>=100, nxt=nextModuleId('iata');
+  box.innerHTML=`
+    ${resume}
+    <div class="gate-intro">
+      <p><b>Airport tests by region.</b> For each airport code you'll <b>(1)</b> say the name out loud (tap 🎤 Say it) and <b>(2)</b> choose its state / province / country. Score <b>${IAX_PASS}%</b> to pass. Start with the <b>United States (100 questions)</b> — passing it completes the module. The other regions are here for extra practice. Unlimited tries; you can stop and resume anytime.</p>
+      <div class="iax-rgrid">${cards}</div>
+      ${done?`<div class="iax-done">✅ Module complete — you passed the United States test.${nxt?` <button class="btn btn-ghost" onclick="go('${nxt}')" style="margin-left:8px">Next module →</button>`:''}</div>`:''}
+    </div>`;
 }
 function iaxResume(){
-  iax={ qs:iaxSession.qs, i:iaxSession.i, correct:iaxSession.correct||0, answered:false };
+  iax={ region:iaxSession.region||'us', qs:iaxSession.qs, i:iaxSession.i, correct:iaxSession.correct||0, answered:false };
   iaxRenderQ();
 }
-function iaxFresh(){ iaxSession=null; persist(); iaxStart(); }
-function iaxOptions(item, pool){
-  let same=[...new Set(pool.filter(x=>x.rk===item.rk && x.st!==item.st).map(x=>x.st))];
+function iaxFresh(){ iaxSession=null; persist(); const box=document.getElementById('gateBox'); if(box) iaxIntro(box); }
+function iaxOptions(item, regionPool, globalPool){
+  let same=[...new Set(regionPool.filter(x=>x.st!==item.st).map(x=>x.st))];
   let opts=shuffle(same).slice(0,3);
-  if(opts.length<3){ const glob=[...new Set(pool.filter(x=>x.st!==item.st && opts.indexOf(x.st)<0).map(x=>x.st))]; opts=opts.concat(shuffle(glob).slice(0,3-opts.length)); }
+  if(opts.length<3){ const glob=[...new Set((globalPool||regionPool).filter(x=>x.st!==item.st && opts.indexOf(x.st)<0).map(x=>x.st))]; opts=opts.concat(shuffle(glob).slice(0,3-opts.length)); }
   return shuffle([item.st, ...opts]);
 }
-function iaxStart(){
-  const pool=iaxAirports(), n=Math.min(IAX_N, pool.length);
-  iax={ qs: shuffle(pool).slice(0,n).map(a=>({a, opts:iaxOptions(a,pool)})), i:0, correct:0, answered:false };
+function iaxStart(region){
+  region=region||'us';
+  const pool=iaxRegionPool(region); if(!pool.length) return;
+  const glob=iaxAllPool(), n=Math.min(IAX_N, pool.length);
+  iax={ region, qs: shuffle(pool).slice(0,n).map(a=>({a, opts:iaxOptions(a,pool,glob)})), i:0, correct:0, answered:false };
   iaxRenderQ();
 }
 function iaxRenderQ(){
   const box=document.getElementById('gateBox'); if(!box) return;
   if(iax.i>=iax.qs.length) return iaxFinish();
-  iaxSession = {qs:iax.qs, i:iax.i, correct:iax.correct}; persist();   // resume point
+  iaxSession = {region:iax.region, qs:iax.qs, i:iax.i, correct:iax.correct}; persist();   // resume point
   const q=iax.qs[iax.i]; iax.answered=false;
   const pct=Math.round(iax.i/iax.qs.length*100);
   box.innerHTML=`<div class="ex-bar"><i style="width:${pct}%"></i></div>
-    <div class="ex-meta">Airport ${iax.i+1} of ${iax.qs.length} · Score ${iax.correct}</div>
+    <div class="ex-meta">${iaxRegionLabel(iax.region)} · Airport ${iax.i+1} of ${iax.qs.length} · Score ${iax.correct}</div>
     <div class="iax-code">${q.a.c}</div>
     <div class="iax-step">Step 1 — say the airport name out loud</div>
     <div class="iax-say">
@@ -4132,15 +4171,19 @@ function iaxPick(btn, correct){
 }
 function iaxNext(){ iax.i++; iaxRenderQ(); }
 function iaxFinish(){
-  const pct=Math.round(iax.correct/iax.qs.length*100), passed=pct>=IAX_PASS;
+  const pct=Math.round(iax.correct/iax.qs.length*100), passed=pct>=IAX_PASS, region=iax.region, rl=iaxRegionLabel(region);
   iaxSession=null;               // test complete — clear the resume point
-  if(passed && progress.iata<100){ progress.iata=100; persist(); refreshNavState(); } else { persist(); }
+  iaxRegionsBest[region]=Math.max(iaxRegionsBest[region]||0, pct);
+  const completes=(region==='us' && passed && progress.iata<100);
+  if(completes) progress.iata=100;
+  persist(); if(completes) refreshNavState();
   const nxt=nextModuleId('iata'), box=document.getElementById('gateBox'); if(!box) return;
   box.innerHTML=`<div class="gate-result ${passed?'pass':'fail'}"><div class="gr-score">${pct}%</div>
-    <h4>${passed?'Airport test passed ✓':'Not yet — keep practising'}</h4>
-    <p>You located ${iax.correct} of ${iax.qs.length} airports correctly. ${passed?'The IATA module is now complete.':`You need ${IAX_PASS}% to pass. Review the codes above and try again.`}</p>
-    ${passed?(nxt?`<button class="btn btn-primary" onclick="go('${nxt}')">Next module →</button>`:''):`<button class="btn btn-primary" onclick="iaxStart()">Try again</button>`}
-    <button class="btn btn-ghost" onclick="go('dash')">Dashboard</button></div>`;
+    <h4>${rl} test — ${passed?'passed ✓':'not yet'}</h4>
+    <p>You located ${iax.correct} of ${iax.qs.length} airports correctly.${region==='us'?(passed?' The IATA module is now complete.':` You need ${IAX_PASS}% on the United States test to complete the module.`):' (Practice region — the United States test is what completes the module.)'}</p>
+    ${(region==='us'&&passed&&nxt)?`<button class="btn btn-primary" onclick="go('${nxt}')">Next module →</button>`:''}
+    <button class="btn btn-primary" onclick="iaxStart('${region}')">Retake ${rl}</button>
+    <button class="btn btn-ghost" onclick="iaxBackToRegions()">All region tests</button></div>`;
 }
 
 const GLOSSARY_TERMS = [
