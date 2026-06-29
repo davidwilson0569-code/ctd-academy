@@ -774,6 +774,11 @@
   .mdot.part{background:var(--amber);border-color:var(--amber)}
   .mdot.none{background:#e7edf3;border-color:#d8e0e9}
   .mdot-legend .mdot{margin:0 1px 0 6px}
+  .btn-danger{background:#fff;color:#b3461f;border:1px solid rgba(232,105,61,.45);font-weight:600}
+  .btn-danger:hover{background:rgba(232,105,61,.1);border-color:#e8693d}
+  .adm-x{background:transparent;border:1px solid var(--line);color:#b3461f;width:26px;height:26px;border-radius:7px;cursor:pointer;font-size:12px;line-height:1;transition:.15s}
+  .adm-x:hover{background:rgba(232,105,61,.1);border-color:#e8693d}
+  .adm-note{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.5;background:#f7fafc;border:1px solid var(--line);border-radius:9px;padding:10px 13px}
   /* airline policies module */
   .air-verify{background:rgba(47,179,126,.08);border:1px solid rgba(47,179,126,.3);border-radius:11px;padding:12px 15px;font-size:13px;color:#1c5c43;margin-bottom:16px;line-height:1.5}
   .air-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
@@ -968,7 +973,8 @@ let agentId = _saved.agentId || genId();
 let examSession = _saved.examSession || null;
 let iaxSession = _saved.iaxSession || null;
 let iaxRegionsBest = _saved.iaxRegionsBest || {};
-function persist(){ saveStore({progress, name:agentName, examBest, examPassed, agentId, examSession, iaxSession, iaxRegionsBest}); syncAgent(); }
+let resetSeen = _saved.resetSeen || 0;
+function persist(){ saveStore({progress, name:agentName, examBest, examPassed, agentId, examSession, iaxSession, iaxRegionsBest, resetSeen}); syncAgent(); }
 function initials(n){ n=(n||'').trim(); if(!n) return 'NA'; const p=n.split(/\s+/); return ((p[0][0]||'')+(p[1]?p[1][0]:'')).toUpperCase(); }
 function setName(v){ agentName=v; persist(); refreshIdentity(); }
 function refreshIdentity(){
@@ -1005,6 +1011,7 @@ const IATA_AUDIO_BASE = ""; // e.g. "https://hplnchoruykuoeqgpsps.supabase.co/st
 const SUPABASE_URL = "https://hplnchoruykuoeqgpsps.supabase.co";
 const SUPABASE_KEY = "sb_publishable_a1SUWOHIKNF7ckME30MO3w_BpBL_qt1"; // publishable key — safe in the browser with RLS on
 const ADMIN_PASSCODE = "CTD-Trainer-2026"; // trainers type this to open the dashboard
+const RESET_MARKER = "__system_reset__";   // reserved row that signals a global reset
 
 let _sb;
 function getSB(){
@@ -1034,6 +1041,24 @@ function syncAgent(){
   }, 700);
 }
 
+async function checkRemoteReset(){
+  try{
+    const sb=getSB(); if(!sb) return;
+    const { data } = await sb.from('ctd_progress').select('updated_at').eq('agent_id', RESET_MARKER).maybeSingle();
+    if(data && data.updated_at){
+      const rt = new Date(data.updated_at).getTime();
+      if(rt && rt > Number(resetSeen||0)) wipeLocalProgress(rt);
+    }
+  }catch(e){ /* offline or not set up — ignore */ }
+}
+function wipeLocalProgress(rt){
+  MODULES.forEach(m=> progress[m.id]=0);
+  examBest=0; examPassed=false; examSession=null; iaxSession=null; iaxRegionsBest={};
+  resetSeen = rt || Date.now();
+  persist();
+  refreshIdentity && refreshIdentity();
+  if(typeof current!=='undefined') go(current==='admin'?'admin':'dash');
+}
 function videoBlock(url, label){
   if(url && url.trim()){
     return `<video class="vplayer" controls preload="metadata" playsinline
@@ -3989,6 +4014,7 @@ function adminCSV(){
   document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 }
 function renderAdmin(rows){
+  rows = (rows||[]).filter(r=> r.agent_id !== RESET_MARKER);   // hide the reset signal row
   _adminRows=rows;
   const total=rows.length;
   const passed=rows.filter(r=>r.exam_passed).length;
@@ -4004,9 +4030,9 @@ function renderAdmin(rows){
   </div>`;
   const toolbar=`<div class="admin-toolbar">
     <div class="mdot-legend"><span class="mdot done"></span> done <span class="mdot part"></span> in progress <span class="mdot none"></span> not started</div>
-    <div style="display:flex;gap:8px"><button class="btn btn-ghost" onclick="adminLoad()">Refresh</button><button class="btn btn-primary" onclick="adminCSV()">⬇ Export CSV</button></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost" onclick="adminLoad()">Refresh</button><button class="btn btn-primary" onclick="adminCSV()">⬇ Export CSV</button><button class="btn btn-danger" onclick="adminResetAll()">⟲ Reset all logs</button></div>
   </div>`;
-  if(!total){ adminMsg(head+'<div class="placeholder">No agents yet. As soon as someone opens the training on the live site and types their name, they\'ll show up here.</div>'); return; }
+  if(!total){ adminMsg(head+toolbar+'<div class="placeholder">No agents yet. As soon as someone opens the training on the live site and types their name, they\'ll show up here.</div>'); return; }
   const body=rows.map(r=>`
     <tr>
       <td><b>${escHtml(r.agent_name||'—')}</b></td>
@@ -4014,10 +4040,29 @@ function renderAdmin(rows){
       <td>${r.exam_best?escHtml(r.exam_best)+'%':'—'}</td>
       <td>${r.exam_passed?'<span class="abadge pass">Passed</span>':'<span class="abadge">In progress</span>'}</td>
       <td class="muted">${fmtTime(r.updated_at)}</td>
+      <td><button class="adm-x" title="Remove this agent's record" onclick="adminResetAgent('${escAttr(r.agent_id)}','${escAttr(r.agent_name||'this agent')}')">✕</button></td>
     </tr>`).join('');
   adminMsg(head+toolbar+`<div class="admin-tablewrap"><table class="admin-table">
-    <thead><tr><th>Agent</th><th>Module progress</th><th>Best exam</th><th>Status</th><th>Last active</th></tr></thead>
-    <tbody>${body}</tbody></table></div>`);
+    <thead><tr><th>Agent</th><th>Module progress</th><th>Best exam</th><th>Status</th><th>Last active</th><th></th></tr></thead>
+    <tbody>${body}</tbody></table></div>
+    <div class="adm-note">⟲ <b>Reset all logs</b> clears the dashboard and wipes every agent's progress on their next visit. ✕ removes one agent's record. Both are permanent.</div>`);
+}
+async function adminResetAgent(id, name){
+  if(!confirm(`Remove ${name}'s record from the dashboard? They'll reappear with fresh progress only if they reopen the training.`)) return;
+  try{ const sb=getSB(); if(!sb){ alert('Live sync is not configured.'); return; }
+    await sb.from('ctd_progress').delete().eq('agent_id', id); adminLoad();
+  }catch(e){ alert('Could not remove — check your connection and that delete is allowed in Supabase (see the note in the deploy guide).'); }
+}
+async function adminResetAll(){
+  if(!confirm('Reset ALL agent logs?\n\nThis clears the dashboard now AND wipes every agent\'s progress the next time they open the training. It cannot be undone.')) return;
+  const t=prompt('Type RESET to confirm:'); if(t!=='RESET'){ if(t!==null) alert('Cancelled — you did not type RESET.'); return; }
+  try{
+    const sb=getSB(); if(!sb){ alert('Live sync is not configured.'); return; }
+    await sb.from('ctd_progress').delete().neq('agent_id', RESET_MARKER);     // clear all agent rows
+    await sb.from('ctd_progress').upsert({ agent_id:RESET_MARKER, agent_name:'(system reset)', modules_done:0, modules_total:MODULES.length, exam_best:0, exam_passed:false, progress:{}, updated_at:new Date().toISOString() }, { onConflict:'agent_id' });
+    alert('All agent logs reset. Agents will start fresh next time they open the training.');
+    adminLoad();
+  }catch(e){ alert('Reset failed — check your connection and that delete is allowed in Supabase (see the note below / in the deploy guide).'); }
 }
 
 /* ============================================================
@@ -5450,6 +5495,7 @@ async function playLessonDemo(i){
 buildNav();
 refreshIdentity();
 go( location.hash==='#admin' ? 'admin' : 'dash' );
+checkRemoteReset();   // honour a trainer "reset all" on next visit
 window.addEventListener('hashchange',()=>{ if(location.hash==='#admin' && current!=='admin') go('admin'); });
 </script>
 </body>
